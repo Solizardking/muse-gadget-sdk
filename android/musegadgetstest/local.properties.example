@@ -1,0 +1,4 @@
+# Copy to local.properties (git-ignored).
+sdk.dir=/path/to/Android/sdk
+# Your mgst_ SDK token from gadgets.muse.ai, as BuildConfig.MUSE_GADGET_API_KEY.
+MUSE_GADGET_API_KEY=mgst_REPLACE_ME

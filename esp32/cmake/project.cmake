@@ -40,4 +40,28 @@ if(MOSAICO_UTILS)
 endif()
 
 # ESP-IDF reads version.txt from the active project root unless PROJECT_VER is set.
+# MUSE_GADGET_API_KEY (your mgst_ SDK token) from the environment or from the
+# git-ignored sdkconfig.defaults.local (see sdkconfig.defaults.local.example)
+# becomes CONFIG_GADGET_SDK_TOKEN, so the token never lands in a tracked file.
+if(NOT SDKCONFIG_DEFAULTS)
+    set(SDKCONFIG_DEFAULTS "${GADGET_SOURCE_DIR}/sdkconfig.defaults")
+endif()
+if(EXISTS "${GADGET_SOURCE_DIR}/sdkconfig.defaults.local")
+    list(APPEND SDKCONFIG_DEFAULTS "${GADGET_SOURCE_DIR}/sdkconfig.defaults.local")
+endif()
+if(NOT "$ENV{MUSE_GADGET_API_KEY}" STREQUAL "")
+    set(GADGET_API_KEY_DEFAULTS "${CMAKE_BINARY_DIR}/sdkconfig.defaults.api_key")
+    file(WRITE "${GADGET_API_KEY_DEFAULTS}" "CONFIG_GADGET_SDK_TOKEN=\"$ENV{MUSE_GADGET_API_KEY}\"\n")
+    list(APPEND SDKCONFIG_DEFAULTS "${GADGET_API_KEY_DEFAULTS}")
+    # An existing sdkconfig wins over defaults; update its token line too.
+    if(EXISTS "${SDKCONFIG}")
+        file(READ "${SDKCONFIG}" GADGET_SDKCONFIG_TEXT)
+        string(REGEX REPLACE "CONFIG_GADGET_SDK_TOKEN=\"[^\"\n]*\""
+            "CONFIG_GADGET_SDK_TOKEN=\"$ENV{MUSE_GADGET_API_KEY}\"" GADGET_SDKCONFIG_NEW "${GADGET_SDKCONFIG_TEXT}")
+        if(NOT GADGET_SDKCONFIG_NEW STREQUAL GADGET_SDKCONFIG_TEXT)
+            file(WRITE "${SDKCONFIG}" "${GADGET_SDKCONFIG_NEW}")
+        endif()
+    endif()
+endif()
+
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)

@@ -109,6 +109,15 @@ idf.py menuconfig   # ESP32 Device SDK > Muse Gadgets SDK token
 idf.py build
 ```
 
+To keep the token out of `sdkconfig`, export it instead, or copy
+`sdkconfig.defaults.local.example` to the git-ignored
+`sdkconfig.defaults.local` and paste it there:
+
+```sh
+export MUSE_GADGET_API_KEY=mgst_…   # becomes CONFIG_GADGET_SDK_TOKEN
+idf.py build
+```
+
 This builds for the ESP32-C5 DevKitC-1. The firmware lands in
 `build/muse-gadget.bin`.
 

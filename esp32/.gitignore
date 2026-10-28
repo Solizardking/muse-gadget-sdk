@@ -52,3 +52,6 @@ __pycache__/
 .gradle/
 .idea/
 local.properties
+
+# Local SDK token (MUSE_GADGET_API_KEY), never committed.
+sdkconfig.defaults.local

@@ -33,6 +33,14 @@ val libDir: String = System.getenv("LIB_DIR")
     ?: (findProperty("musegadgetstest.libDir") as String?)
     ?: "lib"
 
+// The maker's mgst_ SDK token, exposed as BuildConfig.MUSE_GADGET_API_KEY
+// (empty when unset). Never commit it: set it in the environment, in
+// local.properties (git-ignored), or with -PMUSE_GADGET_API_KEY=.
+val museGadgetApiKey: String = System.getenv("MUSE_GADGET_API_KEY")
+    ?: localProps.getProperty("MUSE_GADGET_API_KEY")
+    ?: (findProperty("MUSE_GADGET_API_KEY") as String?)
+    ?: ""
+
 android {
     namespace = "com.musegadgets.test"
     compileSdk = 36
@@ -44,6 +52,8 @@ android {
         versionCode = 1
         versionName = "0.1"
         ndk { abiFilters += "arm64-v8a" }
+        buildConfigField("String", "MUSE_GADGET_API_KEY",
+            "\"" + museGadgetApiKey.replace("\\", "\\\\").replace("\"", "\\\"") + "\"")
     }
 
     sourceSets["main"].apply {
@@ -56,6 +66,8 @@ android {
 
     // Pre-encoded video in assets is read in place.
     androidResources { noCompress += listOf("mp4", "264", "ivf") }
+
+    buildFeatures { buildConfig = true }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
