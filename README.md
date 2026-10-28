@@ -56,6 +56,11 @@ USB-free sweep. The isolated diagnostic does not pair or need an SDK token;
 fixture safety and explicit hardware authorization still come first, as the
 [PPK2 rules](esp32/docs/power/ppk2.md) describe.
 
+## Solana OS for the Solana BP26 badge
+
+Prebuilt Solana OS 0.4.4 firmware, how to flash it, and how to hand a badge
+off to a new owner: [docs/solana-os.md](docs/solana-os.md).
+
 ## Community
 
 Meet other hackers who are building and customizing Muse gadgets in our

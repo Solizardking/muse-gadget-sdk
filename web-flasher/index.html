@@ -287,6 +287,11 @@ limitations under the License.
       if (e.target.localName !== "ewt-install-dialog" || !installedPort) return;
       const port = installedPort;
       installedPort = null;
+      // Prebuilt firmware that isn't Muse (Solana OS) takes no SDK token.
+      if (board.sdk_token === false) {
+        showStatus($("install-status"), "Installed.", "ok");
+        return;
+      }
       if (!token()) {
         showStatus($("install-status"), "Installed. Now enter your SDK token in step 1, then send it under “Already installed?”.", "error");
         tokenInput.focus();
