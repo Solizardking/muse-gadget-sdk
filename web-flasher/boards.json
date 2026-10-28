@@ -66,5 +66,14 @@
       "1a86:55d3"
     ],
     "note": "Flashing takes about 3 minutes; keep the tab in front. Muse replaces Seeed's factory firmware. To go back to it later, back up the flash first: <code>python -m esptool --chip esp32s3 -p PORT read-flash 0 ALL sticky-factory.bin</code>"
+  },
+  {
+    "board": "solana-os-0.4.4",
+    "name": "Solana BP26 badge: Solana OS 0.4.4 (prebuilt)",
+    "usb": [
+      "1a86:7523"
+    ],
+    "sdk_token": false,
+    "note": "Prebuilt Solana OS 0.4.4 from <code>firmware/solana-os/0.4.4</code>. Updating keeps Wi-Fi, settings and the badge link. ESP Web Tools picks its own serial speed; to flash at 460800 baud with <code>--no-stub</code>, or to erase settings, use <code>scripts/flash-solana-os.sh</code> (see <code>docs/solana-os.md</code>)."
   }
 ]

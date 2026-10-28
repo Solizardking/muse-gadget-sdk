@@ -289,6 +289,10 @@ jobs:
       # A listed board that the build matrix doesn't build has no manifest.
       - name: Add page
         run: |
+          # Prebuilt firmware checked into firmware/ (manifest included).
+          mkdir -p site/firmware/solana-os-0.4.4
+          cp firmware/solana-os/0.4.4/*.bin firmware/solana-os/0.4.4/manifest.json site/firmware/solana-os-0.4.4/
+          (cd firmware/solana-os/0.4.4 && sha256sum -c SHA256SUMS)
           for board in $(jq -r '.[].board' web-flasher/boards.json); do
             [ -f "site/firmware/$board/manifest.json" ] || {
               echo "::error::$board is in web-flasher/boards.json but not in the build matrix"

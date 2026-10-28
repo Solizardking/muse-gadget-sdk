@@ -1,0 +1,17 @@
+{
+  "name": "Solana OS",
+  "version": "0.4.4",
+  "new_install_prompt_erase": false,
+  "min_flash_bytes": 16777216,
+  "builds": [
+    {
+      "chipFamily": "ESP32-C5",
+      "parts": [
+        { "path": "bootloader.bin", "offset": 8192 },
+        { "path": "partition-table.bin", "offset": 32768 },
+        { "path": "ota_data_initial.bin", "offset": 61440 },
+        { "path": "solana_os.bin", "offset": 131072 }
+      ]
+    }
+  ]
+}
