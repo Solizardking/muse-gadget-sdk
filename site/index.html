@@ -127,7 +127,9 @@
   .arm { width: 84px; height: 84px; }
   .arm .horn { transform-origin: 42px 42px; transition: transform 0.45s cubic-bezier(.2,.8,.2,1); }
   .applied .horn { transform: rotate(28deg); }
-  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 48px; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+  h2.band { font-family: "Chakra Petch", sans-serif; font-size: 1.6rem; margin: 48px 0 0; }
+  #wallets { margin-top: 48px; }
   article {
     border: 1px solid rgba(243, 239, 228, 0.12);
     border-radius: 18px; padding: 20px 20px 8px;
@@ -135,6 +137,7 @@
   }
   article h3 { font-family: "Chakra Petch", sans-serif; margin: 0 0 8px; }
   article p, article li { color: var(--dim); }
+  article a { color: var(--green); }
   .marquee { margin-top: 42px; overflow: hidden; border-block: 1px solid var(--line); }
   .marquee p {
     margin: 0; padding: 10px 0; white-space: nowrap;
@@ -168,6 +171,7 @@
     <a class="primary" href="https://github.com/themusebook/solana-gadget-kit">Open the kit</a>
     <a href="https://github.com/themusebook/solana-gadget-kit/tree/main/solana">Host examples</a>
     <a href="#wallets">Two wallets</a>
+    <a href="#sdks">SDKs</a>
   </div>
   <section class="stage" aria-label="240 by 240 review surface">
     <div class="bezel" id="bezel">
@@ -221,6 +225,33 @@
         <li>Linux companion, firmware, API, and dashboard stay in the tree.</li>
         <li>No live provider keys ship with the kit.</li>
       </ul>
+    </article>
+  </section>
+  <h2 class="band" id="sdks-title">SDKs, phone apps, and badge firmware</h2>
+  <section class="cards" id="sdks" aria-labelledby="sdks-title">
+    <article>
+      <h3>ESP32 Device SDK</h3>
+      <p><a href="../esp32/README.md">esp32/</a> is the firmware that joins Wi-Fi and pairs with the Muse app. Board overlays are in <a href="../esp32/devices/README.md">esp32/devices</a>. The desktop preview is <a href="../esp32/simulator/README.md">esp32/simulator</a>.</p>
+    </article>
+    <article>
+      <h3>Linux Device SDK</h3>
+      <p><a href="../linux/README.md">linux/</a> turns a Raspberry Pi, or another Linux machine with Bluetooth LE, into a Muse gadget. Read <a href="../linux/install.sh">install.sh</a> before you run it. Extra notes: <a href="../linux/docs/fedora.md">Fedora</a> and <a href="../linux/docs/rdk-x5.md">RDK-X5</a>.</p>
+    </article>
+    <article>
+      <h3>Android test app</h3>
+      <p><a href="../android/musegadgetstest/README.md">android/musegadgetstest</a> streams the camera, color bars, or a sample clip to a gadget display over Wi-Fi. Plain Java. <a href="../android/musegadgetstest/tools/livebench/README.md">livebench</a> measures that path.</p>
+    </article>
+    <article>
+      <h3>iPhone test app</h3>
+      <p><a href="../ios/musegadgetstest/README.md">ios/musegadgetstest</a> is the same test in Swift, plus a little C. Xcode 16 or later, iOS 17 or later.</p>
+    </article>
+    <article>
+      <h3>Solana OS firmware</h3>
+      <p><a href="../firmware/solana-os/0.4.4/README.txt">firmware/solana-os/0.4.4</a> is the prebuilt BP26 bundle: bootloader, partition table, OTA data, and <code>solana_os.bin</code>. Check <a href="../firmware/solana-os/0.4.4/SHA256SUMS">SHA256SUMS</a> first.</p>
+    </article>
+    <article>
+      <h3>Badge flash note</h3>
+      <p><a href="../docs/solana-os.md">docs/solana-os.md</a> is the terminal flash guide: ESP32-C5, CH340, 460800 baud, and what the erase flags clear.</p>
     </article>
   </section>
   <footer>

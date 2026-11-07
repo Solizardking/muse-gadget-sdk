@@ -47,6 +47,12 @@ press still cannot sign or submit.
 | [Robotics gate](solana) | `servo:15` is applied only for a matching confirmation. |
 | [240×240 review](solana/dashboard/index.html) | Home, review summary, expired, cancelled. |
 | [Solana OS 0.4.4](docs/solana-os.md) | Badge bundle. [scripts/flash-solana-os.sh](scripts/flash-solana-os.sh) flashes the BP26 badge. [web-flasher](web-flasher) installs firmware from Chrome or Edge. |
+| [ESP32 Device SDK](esp32) | Firmware that joins Wi-Fi and pairs with the Muse app. Board notes are in [esp32/devices](esp32/devices). |
+| [Linux Device SDK](linux) | A Raspberry Pi, or another Linux machine with Bluetooth LE, as a Muse gadget. |
+| [Android test app](android/musegadgetstest) | Streams camera, color bars, or a clip to a gadget display. |
+| [iPhone test app](ios/musegadgetstest) | The same test on iOS 17, in Swift. |
+| [Badge images](firmware/solana-os/0.4.4) | Prebuilt Solana OS 0.4.4 binaries, checksums, and flash args. |
+| [Flash note](docs/solana-os.md) | Terminal steps for the BP26 badge. |
 
 [skills](skills/CATALOG.md) is the community device catalog. Those skills are
 not official Muse product integrations. This README, [LICENSE](LICENSE),
