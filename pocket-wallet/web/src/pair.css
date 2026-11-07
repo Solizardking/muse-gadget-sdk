@@ -1,0 +1,88 @@
+.pair-page main { max-width: 1080px; padding-top: 44px; }
+.pair-hero { display: grid; grid-template-columns: minmax(0, 1fr) 285px; gap: 64px; align-items: center; margin-bottom: 35px; }
+.pair-hero h1 { font-size: clamp(40px, 4.5vw, 56px); letter-spacing: -2.5px; margin-bottom: 20px; }
+.pair-hero .hero-description { max-width: 530px; }
+.pair-distinction { font-size: 11px; color: var(--purple); margin-top: 20px; }
+.pair-art { position: relative; overflow: hidden; aspect-ratio: 1; border: 1px solid var(--line); border-radius: 26px; background: var(--art-background); box-shadow: var(--shadow); }
+.pair-art picture, .pair-art img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.pair-art-label { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); padding: 7px 12px; color: var(--text); font-size: 9px; font-weight: 700; letter-spacing: 1.4px; white-space: nowrap; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--header-background); }
+.pair-status { margin-bottom: 37px; padding: 23px 26px; background: linear-gradient(115deg, var(--surface), var(--surface-raised)); }
+.pair-status-heading { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+.pair-status-heading h2 { margin: 0; font-size: 20px; }
+.pair-status-heading button { margin: 0; }
+.pair-status-grid { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 24px; margin-top: 24px; }
+.status-caption { color: var(--subtle); font-size: 9px; font-weight: 700; letter-spacing: 1.25px; }
+.pair-status-grid p { font-size: 12px; line-height: 1.65; color: var(--text); margin: 7px 0 0; }
+.pair-status[data-state='available'] #backend-status { color: var(--teal); }
+.pair-status[data-state='unavailable'] #backend-status { color: var(--coral-text); }
+.pair-status .hint { margin-bottom: 0; border-top: 1px solid var(--line); padding-top: 15px; }
+.pair-setup-heading .eyebrow { margin-bottom: 8px; }
+.pair-setup-heading h2 { font-size: 29px; margin-top: 0; }
+.pair-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0; scroll-margin-top: 20px; }
+.pair-tabs button { margin: 0; color: var(--muted); border-color: var(--line-strong); background: var(--surface); }
+.pair-tabs button[aria-selected='true'] { color: #271016; border-color: var(--coral); background: var(--coral); }
+.pair-panel { min-width: 0; border-radius: 18px; }
+.pair-panel:focus-visible { outline: 3px solid var(--purple); outline-offset: 4px; }
+.pair-steps { display: grid; gap: 16px; list-style: none; padding: 0; margin: 0; }
+.pair-steps .card { padding: 27px 30px; }
+.pair-steps h2 { margin-top: 8px; }
+.pair-steps p { max-width: 840px; font-size: 13px; }
+.pair-steps .hint { font-size: 11px; }
+.pair-page strong { color: var(--text); font-weight: 600; }
+.pair-page p code { font-size: .94em; color: var(--purple); overflow-wrap: anywhere; }
+.pair-steps .primary-link { margin-top: 6px; }
+.pair-command { display: flex; min-width: 0; align-items: flex-start; gap: 14px; margin: 18px 0; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--field); }
+.pair-command pre { flex: 1; min-width: 0; margin: 0; overflow-x: auto; padding: 3px 0 6px; scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; color: var(--text); font-size: 12px; line-height: 1.8; }
+.pair-command code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+.pair-command button { flex-shrink: 0; margin: 0; min-height: 36px; padding: 8px 11px; font-size: 10px; }
+.pair-device, .pair-reconnect { display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; }
+.pair-device p, .pair-reconnect p { font-size: 13px; }
+.pair-device h3, .pair-reconnect h3 { margin: 8px 0 15px; font: 600 18px/1.3 'Space Grotesk', sans-serif; letter-spacing: -.3px; }
+.pair-device-notes { border-left: 1px solid var(--line); padding-left: 30px; }
+.pair-device a, .pair-reconnect a, .pair-steps > li > a:not(.primary-link) { font-size: 12px; line-height: 1.8; }
+.pair-copy-notice { position: sticky; bottom: 18px; z-index: 5; padding: 13px 17px; color: var(--text); font-size: 12px; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--notice-background); box-shadow: var(--shadow); }
+.pair-copy-notice:empty { display: none; }
+.pair-reconnect { margin-top: 25px; }
+.pair-docs { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px 20px; font-size: 11px; }
+
+@media (max-width: 960px) {
+  .pair-hero { grid-template-columns: minmax(0, 1fr) 240px; gap: 32px; }
+  .pair-hero h1 { font-size: 45px; }
+  .pair-status-grid { gap: 18px; }
+}
+@media (max-width: 700px) {
+  .pair-page main { padding-top: 30px; }
+  .pair-hero { grid-template-columns: minmax(0, 1fr); gap: 22px; margin-bottom: 25px; }
+  .pair-hero h1 { font-size: clamp(38px, 8.4vw, 52px); letter-spacing: -2px; }
+  .pair-art { width: 200px; justify-self: center; border-radius: 20px; }
+  .pair-hero .hero-actions { margin-top: 20px; }
+  .pair-status { padding: 20px; margin-bottom: 28px; }
+  .pair-status-grid { grid-template-columns: 1fr; gap: 17px; margin-top: 20px; }
+  .pair-status-grid > div + div { border-top: 1px solid var(--line); padding-top: 13px; }
+  .pair-status-heading h2 { font-size: 20px; }
+  .pair-setup-heading h2 { font-size: 25px; }
+  .pair-steps .card { padding: 23px; }
+  .pair-command { flex-direction: column; align-items: stretch; padding: 13px; gap: 9px; }
+  .pair-command pre { width: 100%; font-size: 11px; }
+  .pair-command button { min-height: 44px; align-self: flex-start; }
+  .pair-device, .pair-reconnect { grid-template-columns: 1fr; gap: 18px; }
+  .pair-device-notes { border-top: 1px solid var(--line); border-left: 0; padding: 20px 0 0; }
+  .pair-docs { justify-content: flex-start; gap: 12px 18px; }
+}
+@media (max-width: 420px) {
+  .pair-page .header-actions { flex-direction: row; }
+  .pair-hero h1 { font-size: clamp(34px, 9.6vw, 39px); letter-spacing: -1.5px; }
+  .pair-art { width: 180px; }
+  .pair-status { padding: 18px; }
+  .pair-status-heading { gap: 9px; }
+  .pair-status-heading h2 { font-size: 18px; }
+  .pair-status-heading button { padding-inline: 10px; font-size: 10px; }
+  .pair-tabs { gap: 8px; }
+  .pair-tabs button { padding-inline: 12px; font-size: 11px; }
+  .pair-steps .card { padding: 19px; }
+  .pair-steps p, .pair-device p, .pair-reconnect p { font-size: 12px; }
+  .pair-steps .hint { font-size: 11px; }
+  .pair-command { padding: 11px; }
+  .pair-command pre { font-size: 10px; }
+  .pair-page .footer-brand { flex-wrap: wrap; }
+}

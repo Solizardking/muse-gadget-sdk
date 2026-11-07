@@ -1,0 +1,16 @@
+{
+  "name": "agentwallet-proxy",
+  "main": "wallet-proxy.mjs",
+  "account_id": "7640372571bf2d69ed5d58a6a6d8929e",
+  "compatibility_date": "2026-10-03",
+  "workers_dev": false,
+  "preview_urls": false,
+  "keep_vars": true,
+  "vars": {
+    "RAILWAY_ORIGIN": "https://wallet-production-b4b7.up.railway.app"
+  },
+  "routes": [
+    { "pattern": "wallet.musebook.trade", "zone_id": "d15e5da3754f431aff2ad97bdbbde17f" },
+    { "pattern": "wallet.musebook.trade/*", "zone_id": "d15e5da3754f431aff2ad97bdbbde17f" }
+  ]
+}

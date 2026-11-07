@@ -1,0 +1,8 @@
+base_url = "http://127.0.0.1:8787"
+# Paste a short-lived device token after signing in to the browser UI.
+# Sessions expire after one hour. No wallet secret or provider API keys here.
+device_token = ""
+wallet = ""
+## Muse inference stays on the backend; no Meta provider key goes in device config.
+muse_model = "muse-spark-1.3"
+muse_protocol = "responses"

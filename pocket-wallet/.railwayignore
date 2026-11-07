@@ -1,0 +1,25 @@
+# Upload only the server, frontend sources and explicit build configuration.
+*
+!Dockerfile
+!.dockerignore
+!.railwayignore
+!package.json
+!package-lock.json
+!vite.config.js
+!api/
+!api/**
+!web/
+!web/**
+!docs/
+!docs/PAIRING.md
+!docs/MUSE_SDK.md
+!docs/MOBILE.md
+!docs/SECURITY.md
+api/tests/
+**/.env*
+**/node_modules/
+**/dist/
+**/*.pem
+**/*.key
+**/*.log
+**/.DS_Store

@@ -1,0 +1,61 @@
+{
+  "reference_root": "/Users/8bit/Untitled",
+  "files": [
+    {
+      "path": "README.md",
+      "sha256": "0719eff170b3579b9af565ede60af609e5f05e96a10568da69e46754569d7c0f"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "0353a8ae950232a70f0379a4b8a10b661b2f3e3a598e9411332fc0d4f98947fa"
+    },
+    {
+      "path": "CODE_OF_CONDUCT.md",
+      "sha256": "b161b3e2ec4712ebf69efc38ef796d2c701a323aac51cf11759d38e9c56c39bd"
+    },
+    {
+      "path": "CONTRIBUTING.md",
+      "sha256": "d9c208d76cffa6138304bfa05c17affe8eeafab217b646350f9916da4fd7253d"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "920eef4970a70e62033f277dfd8e092dac52d779ed2f2115ed8e863cdca5f077"
+    },
+    {
+      "path": "esp32/AGENTS.md",
+      "sha256": "8a99055a7ae75db5afd48308fb5051f0b875a9f6479799a42b34be307c63f457"
+    },
+    {
+      "path": "esp32/main/image_fetch.h",
+      "sha256": "d69d3ff75e7fa0190d58860ea8c233161ab396c505a026553a5ca48bfba82b81"
+    },
+    {
+      "path": "esp32/devices/AGENTS.md",
+      "sha256": "76a470edca52ffac11b1fae6564a0ae5bcc2492cd0185108c56eb2013e51d8cc"
+    },
+    {
+      "path": "linux/AGENTS.md",
+      "sha256": "698e2141ebc42056a44bd180a4d351bcb8913c36109e5b7329ff49115bdd15f9"
+    },
+    {
+      "path": "linux/src/musegadget/executor.py",
+      "sha256": "b3795fc4649d1e249ea819fc2b395576c975894b3d5b92cbb6ab065d3374139c"
+    },
+    {
+      "path": "linux/pyproject.toml",
+      "sha256": "c63e8282154590d1afe598e9be1dbb6e06c3f00dc5b117e940189a6c08104b28"
+    },
+    {
+      "path": "skills/README.md",
+      "sha256": "2d923ea9354564982108e04fbc68f85b3791ad0904fc068edf852c58d8760f99"
+    },
+    {
+      "path": ".github/workflows/esp32.yml",
+      "sha256": "8c837e97c96ba7a84287a6379613b9a9d85d8f960770b1997c1a83b200fb5270"
+    },
+    {
+      "path": ".github/workflows/linux.yml",
+      "sha256": "4a3c6adad78043b38ef453bc71580756b72e92e8304a3b67102245456e5ffe48"
+    }
+  ]
+}

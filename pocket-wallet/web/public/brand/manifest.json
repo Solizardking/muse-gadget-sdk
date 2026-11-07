@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "sourceDirectory": "/Users/8bit/Downloads/clawd-webmcp-starter/musebook-private/web-react/public/brand",
+  "assets": [
+    {
+      "path": "/brand/clawd-builder-160.webp",
+      "sourcePath": "/Users/8bit/Downloads/clawd-webmcp-starter/musebook-private/web-react/public/brand/clawd-builder-160.webp",
+      "width": 160,
+      "height": 160,
+      "format": "webp",
+      "bytes": 6140,
+      "sha256": "d7f64684c94fe2741531dc098c2c796c541beb6a650a8d29769a701f4498a24d",
+      "purpose": "Responsive Clawd builder avatar, 160 pixel candidate.",
+      "validation": {
+        "fullDecode": true,
+        "sourceHashMatches": true
+      }
+    },
+    {
+      "path": "/brand/clawd-builder-320.webp",
+      "sourcePath": "/Users/8bit/Downloads/clawd-webmcp-starter/musebook-private/web-react/public/brand/clawd-builder-320.webp",
+      "width": 320,
+      "height": 320,
+      "format": "webp",
+      "bytes": 15922,
+      "sha256": "fc2cdf295201ef7652fc6381999464c1fc40761718c12ce1445d92a5fe12deb5",
+      "purpose": "Responsive Clawd builder avatar, 320 pixel candidate.",
+      "validation": {
+        "fullDecode": true,
+        "sourceHashMatches": true
+      }
+    },
+    {
+      "path": "/brand/clawd-mascot-dark.png",
+      "sourcePath": "/Users/8bit/Downloads/clawd-webmcp-starter/musebook-private/web-react/public/brand/clawd-mascot-dark.png",
+      "width": 1254,
+      "height": 1254,
+      "format": "png",
+      "bytes": 1731943,
+      "sha256": "cc3c966e77523f3f6798af91befed3aa32e10093d27f801617602c1198de7e1f",
+      "purpose": "Clawd mascot hero on dark theme surfaces.",
+      "validation": {
+        "fullDecode": true,
+        "sourceHashMatches": true
+      }
+    },
+    {
+      "path": "/brand/clawd-mascot-source.png",
+      "sourcePath": "/Users/8bit/Downloads/clawd-webmcp-starter/musebook-private/web-react/public/brand/clawd-mascot-source.png",
+      "width": 1254,
+      "height": 1254,
+      "format": "png",
+      "bytes": 1923243,
+      "sha256": "2485ada9c0537b6251de7e91aa5bfa66bbe658d5b4c347a24f2e9e1e98c92e84",
+      "purpose": "Clawd mascot hero picture source for print or light color scheme.",
+      "validation": {
+        "fullDecode": true,
+        "sourceHashMatches": true
+      }
+    },
+    {
+      "path": "/brand/solana/solanaGradientDark.png",
+      "sourcePath": "/Users/8bit/Downloads/clawd-webmcp-starter/musebook-private/web-react/public/brand/solana/solanaGradientDark.png",
+      "width": 1600,
+      "height": 280,
+      "format": "png",
+      "bytes": 3187,
+      "sha256": "aef3275ee6a831bd6cbe7467bd6a332dba64ab3ccf99e7d47f8097444bd75079",
+      "purpose": "Dark Solana gradient strip decorating the product footer.",
+      "validation": {
+        "fullDecode": true,
+        "sourceHashMatches": true
+      }
+    },
+    {
+      "path": "/brand/solana/solanaGradient.jpg",
+      "sourcePath": "/Users/8bit/Downloads/clawd-webmcp-starter/musebook-private/web-react/public/brand/solana/solanaGradient.jpg",
+      "width": 5440,
+      "height": 1888,
+      "format": "jpeg",
+      "bytes": 339885,
+      "sha256": "e158e31132dd5b4b4f09005e4c434d91f6142fb7206834317be863407c800b2c",
+      "purpose": "Solana gradient accent in brand surfaces.",
+      "validation": {
+        "fullDecode": true,
+        "sourceHashMatches": true
+      }
+    }
+  ]
+}

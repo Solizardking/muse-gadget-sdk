@@ -1,0 +1,14 @@
+{
+  "provider": "meta",
+  "credential_location": "backend META_API_KEY or MODEL_API_KEY; never ESP32 flash or web bundle",
+  "default_model": "muse-spark-1.3",
+  "default_protocol": "responses",
+  "protocols": ["responses", "chat/completions", "messages"],
+  "voice_models": ["muse-spark-1.3", "muse-spark-1.2", "muse-spark-1.1", "muse-spark-1.3-contributor", "muse-spark-1.2-contributor"],
+  "model_catalog_route": "/api/gadget/meta/models",
+  "image_and_segmentation": "Muse Image and SAM accept Responses requests on the backend; large media belongs on the companion",
+  "transcription": "Muse Voice Transcribe uses dedicated ASR endpoints, not the three text formats; audio transport is not implemented here",
+  "contributor_notice": "Contributor models permit training on prompts and replies; selection is explicit",
+  "requires": ["scoped device session", "HTTPS backend", "CONFIG_MBEDTLS_CERTIFICATE_BUNDLE=y"],
+  "hardware_status": "request builder host-tested; board flashing and display integration require a connected device and board port"
+}

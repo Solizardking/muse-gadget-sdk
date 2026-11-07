@@ -1,0 +1,30 @@
+{
+  "name": "pocket-wallet",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node api/server.mjs",
+    "dev": "vite --host 127.0.0.1",
+    "api": "node --env-file-if-exists=.env --env-file-if-exists=.env.local api/server.mjs",
+    "build": "vite build",
+    "test": "node --test api/tests/*.test.mjs",
+    "check": "npm test && npm run test:sdk && npm run build && python3 -m unittest discover -s linux/tests && python3 firmware/tests/test_state.py",
+    "muse:sdk": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/muse-sdk.mjs",
+    "test:sdk": "node --test scripts/tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@solana-mobile/seeker-connect-wallet-standard": "^0.1.0",
+    "@solana-mobile/wallet-standard-mobile": "^0.5.3",
+    "@solana/web3.js": "^1.98.4",
+    "@wallet-standard/app": "^1.1.0",
+    "@wallet-standard/features": "^1.1.0",
+    "bs58": "^6.0.0",
+    "express": "^5.1.0",
+    "sharp": "^0.35.5",
+    "tweetnacl": "^1.0.3"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0"
+  }
+}

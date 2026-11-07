@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "pocket-wallet-companion"
+version = "0.1.0"
+description = "Read-only Muse gadget wallet companion and transaction review"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+[project.scripts]
+pocket-wallet = "clawd_muse.service:main"
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["clawd_muse*"]

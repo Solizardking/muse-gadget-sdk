@@ -1,0 +1,9 @@
+{
+  "source": "https://www.waveshare.com/wiki/ESP32-S3-Touch-LCD-1.28",
+  "target": "esp32s3", "module": "ESP32-S3R2", "flash_mb": 16, "psram_mb": 2, "psram_mode": "quad",
+  "display": {"controller": "GC9A01A", "width":240,"height":240,"spi":{"dc":8,"cs":9,"sclk":10,"mosi":11,"miso":12,"reset":14},"backlight":2},
+  "touch": {"controller":"CST816S","sda":6,"scl":7,"interrupt":5,"reset":13},
+  "boot":0,"battery_adc":1,"imu":"QMI8658",
+  "audio_proposed": {"bclk":15,"ws":16,"mic_data":17,"amp_data":18,"status":"requires board-revision and electrical verification"},
+  "status":"vendor pin map verified; ESP-IDF board port and physical device validation pending"
+}

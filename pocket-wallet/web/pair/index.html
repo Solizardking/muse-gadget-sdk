@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07060c">
+  <meta name="description" content="Connect your Pocket Wallet, export a companion session, and pair a Linux or Raspberry Pi companion with Muse.">
+  <title>Pair Pocket Wallet · Muse + Clawd</title>
+  <link rel="icon" type="image/webp" href="/brand/clawd-builder-160.webp">
+  <link rel="apple-touch-icon" href="/brand/clawd-builder-320.webp">
+</head>
+<body class="pair-page">
+  <header>
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="Pocket Wallet home">
+        <img class="brand-mark" src="/brand/clawd-builder-160.webp" srcset="/brand/clawd-builder-160.webp 160w, /brand/clawd-builder-320.webp 320w" sizes="48px" alt="" width="48" height="48">
+        <span class="brand-copy"><strong>POCKET WALLET</strong><small>Muse + Clawd inside</small></span>
+      </a>
+      <div class="header-actions">
+        <a class="header-link" href="/#wallet-connect">Wallet dashboard</a>
+        <button id="theme-toggle" class="theme-toggle secondary" type="button" aria-label="Switch to light theme">Light</button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="pair-hero" aria-labelledby="pair-title">
+      <div>
+        <p class="eyebrow">PAIRING &amp; FIRST USE</p>
+        <h1 id="pair-title">Bring your<br><span>companion along.</span></h1>
+        <p class="hero-description">Start with your wallet. Then give Clawd a home on your Linux computer or Raspberry Pi and connect it to Muse.</p>
+        <div class="hero-actions"><a class="primary-link" href="/#wallet-connect">Open wallet dashboard <span aria-hidden="true">↗</span></a><a class="secondary-link" href="#pair-tabs">Set up your device <span aria-hidden="true">↓</span></a></div>
+        <p class="pair-distinction">Wallet sign-in and Muse device pairing are separate connections.</p>
+      </div>
+      <div class="pair-art">
+        <picture><source id="mascot-source" media="not all" srcset="/brand/clawd-mascot-source.png"><img src="/brand/clawd-mascot-dark.png" alt="Clawd, your Pocket Wallet companion" width="1254" height="1254" decoding="async"></picture>
+        <span class="pair-art-label">MUSE + CLAWD</span>
+      </div>
+    </section>
+
+    <section class="pair-status card" id="pair-status" aria-labelledby="status-title" aria-busy="true">
+      <div class="pair-status-heading"><h2 id="status-title">Before you begin</h2><button id="status-retry" class="secondary" type="button">Check again</button></div>
+      <div class="pair-status-grid">
+        <div><span class="status-caption">WALLET BACKEND</span><p id="backend-status" role="status" aria-live="polite">Checking wallet services…</p></div>
+        <div><span class="status-caption">MUSE SDK CREDENTIAL</span><p id="sdk-status">Checking configuration…</p></div>
+        <div><span class="status-caption">YOUR DEVICE</span><p id="device-status">Device connection not reported</p></div>
+      </div>
+      <p class="hint">A configured SDK credential does not mean your device is paired. Confirm pairing in Muse and check the connection logs on your Linux device.</p>
+    </section>
+
+    <div class="pair-setup-heading"><p class="eyebrow">CHOOSE YOUR COMPANION</p><h2>A few steps to make it yours.</h2></div>
+    <div class="pair-tabs" id="pair-tabs" role="tablist" aria-label="Companion device">
+      <button id="tab-linux" type="button" role="tab" aria-selected="true" aria-pressed="true" aria-controls="panel-linux" tabindex="0">Linux / Raspberry Pi</button>
+      <button id="tab-esp32" type="button" role="tab" aria-selected="false" aria-pressed="false" aria-controls="panel-esp32" tabindex="-1">ESP32 handheld</button>
+    </div>
+
+    <section id="panel-linux" class="pair-panel" role="tabpanel" aria-labelledby="tab-linux" tabindex="0">
+      <ol class="pair-steps">
+        <li class="card"><span class="step" aria-hidden="true">01 / YOUR WALLET</span><h2>Connect and sign in on your phone</h2><p>Open the wallet dashboard and choose your installed wallet. Then press <strong>Sign in to Pocket Wallet</strong> and approve the displayed message.</p><p>On Android Chrome, choose <strong>Use Installed Wallet</strong>. On iOS, open the dashboard in a compatible wallet browser. Desktop works with a Wallet Standard extension.</p><a class="primary-link" href="/#wallet-connect">Open wallet dashboard <span aria-hidden="true">↗</span></a><p class="hint">Sign-in allows balance reads and transaction preparation. Every trade still needs your approval in your wallet.</p></li>
+        <li class="card"><span class="step" aria-hidden="true">02 / YOUR COMPANION SESSION</span><h2>Give your companion a wallet connection</h2><p>After signing in, choose <strong>Download companion config</strong> in the dashboard. Move the downloaded <code>config.toml</code> to <code>~/.config/pocket-wallet/config.toml</code> on the Linux account that will run your companion.</p><div class="pair-command"><pre><code id="cmd-chmod">chmod 600 ~/.config/pocket-wallet/config.toml</code></pre><button type="button" class="secondary" data-copy="cmd-chmod" aria-label="Copy config permissions command">Copy command</button></div><p class="hint">The export uses this dashboard’s HTTPS API origin. Keep the config private: its scoped session lasts one hour and cannot submit transactions. Sign in again and export a fresh config when it expires.</p></li>
+        <li class="card"><span class="step" aria-hidden="true">03 / THE MUSE SDK</span><h2>Prepare and install on Linux</h2><p>Run these commands from your Pocket Wallet checkout, with the Muse SDK checkout beside it at <code>../muse-gadget-sdk</code>. Adjust <code>--source</code> if your SDK is elsewhere.</p><p>Your Linux Pi or computer needs BlueZ, the distro’s <code>python3-dbus</code> and <code>python3-gi</code>, and an account with access to system D-Bus and <code>/var/lib/musegadget</code>.</p><div class="pair-command"><pre><code id="cmd-prepare">python3 scripts/prepare-linux-sdk.py --source ../muse-gadget-sdk/linux --output build/muse-linux-token</code></pre><button type="button" class="secondary" data-copy="cmd-prepare" aria-label="Copy SDK preparation command">Copy command</button></div><div class="pair-command"><pre><code id="cmd-install">python3 -m venv --system-site-packages build/muse-linux-token/.venv
+build/muse-linux-token/.venv/bin/pip install ./build/muse-linux-token ./linux</code></pre><button type="button" class="secondary" data-copy="cmd-install" aria-label="Copy SDK installation commands">Copy commands</button></div><p>Configure <code>SDK_TOKEN</code> in a private <code>.env.local</code> on that device. This <code>SDK_TOKEN</code> credential is separate from your wallet session and the credentials created by Muse pairing.</p><p class="hint">Use a private env file containing only the SDK credential on your Pi. Provider secrets stay on the backend. Follow the SDK’s installer instructions for device-state and D-Bus permissions.</p><a href="/docs/MUSE_SDK.md">Read the Muse SDK setup guide <span aria-hidden="true">↗</span></a></li>
+        <li class="card"><span class="step" aria-hidden="true">04 / PAIR WITH MUSE</span><h2>Confirm your companion in the app</h2><div class="pair-command"><pre><code id="cmd-pair">node --env-file=.env.local scripts/muse-sdk.mjs pair \
+  --sdk build/muse-linux-token --python build/muse-linux-token/.venv/bin/python</code></pre><button type="button" class="secondary" data-copy="cmd-pair" aria-label="Copy Muse pairing command">Copy command</button></div><p>In Muse on your phone, open <strong>Settings → Devices → Developer mode</strong>. Find <code>MuseGadgetXXXXXX</code> and confirm pairing in the app.</p><p class="hint">Run pairing on the Linux device with BLE access. The wallet dashboard’s config export is a separate step and does not pair the device with Muse.</p></li>
+        <li class="card"><span class="step" aria-hidden="true">05 / STAY CONNECTED</span><h2>Start the connection loop</h2><div class="pair-command"><pre><code id="cmd-run">node --env-file=.env.local scripts/muse-sdk.mjs run \
+  --sdk build/muse-linux-token --python build/muse-linux-token/.venv/bin/python \
+  --run-as your-linux-account</code></pre><button type="button" class="secondary" data-copy="cmd-run" aria-label="Copy Muse connection command">Copy command</button></div><p>Replace <code>your-linux-account</code> with the account holding your companion config. A successful connection reports <code>Noise session established</code> and <code>registered with the Muse</code> in the SDK logs.</p><p class="hint">A real Pi-to-phone BLE connection has not yet been verified in this project. This page reports backend configuration; it cannot confirm a physical device connection.</p></li>
+      </ol>
+    </section>
+
+    <section id="panel-esp32" class="pair-panel" role="tabpanel" aria-labelledby="tab-esp32" tabindex="0" hidden>
+      <div class="pair-device card"><div><span class="step">BOARD PORT REQUIRED</span><h2>Handheld pairing is still in development</h2><p>The Waveshare ESP32-S3-Touch-LCD-1.28 needs GC9A01A display and CST816S touch drivers, network integration, an ESP-IDF v6.0.1 build, flashing, and verified boot and touch behavior.</p><p>There is no working handheld pairing build to download yet. The 1.75-inch AMOLED profile targets a different board.</p></div><div class="pair-device-notes"><h3>Before hardware pairing</h3><p>Keep <code>SDK_TOKEN</code> in an ignored private build config. It is compiled into firmware, so firmware containing it must stay private.</p><p>A physical press opens phone review within ten seconds. Voice and remote commands cannot act as a physical press or approve spending.</p><a href="/docs/MUSE_SDK.md">Read firmware setup requirements <span aria-hidden="true">↗</span></a></div></div>
+    </section>
+
+    <p id="copy-notice" class="pair-copy-notice" role="status" aria-live="polite"></p>
+    <section class="pair-reconnect card" aria-labelledby="reconnect-title"><div><span class="step">WHEN YOU COME BACK</span><h2 id="reconnect-title">Reconnect safely</h2><p>Session expired? Sign in and export a fresh config. Wallet account changed? Reconnect. Quote expired? Request a fresh quote. If a submission is uncertain, check your wallet history before starting another trade.</p></div><div><h3>Keep your keys with you</h3><p>Private keys stay in your installed wallet. Provider keys stay on the backend. Your companion session belongs in its private config.</p><a href="/docs/SECURITY.md">How Pocket Wallet keeps you in control <span aria-hidden="true">↗</span></a></div></section>
+    <footer>
+      <div class="footer-brand"><img src="/brand/clawd-builder-160.webp" alt="" width="36" height="36" loading="lazy"><div><strong>POCKET WALLET</strong><span>Muse + Clawd inside</span></div><img class="solana-art" src="/brand/solana/solanaGradientDark.png" alt="" width="112" height="20" loading="lazy"></div>
+      <nav class="pair-docs" aria-label="Setup references"><a href="/docs/PAIRING.md">Pairing reference</a><a href="/docs/MOBILE.md">Mobile support</a><a href="/docs/MUSE_SDK.md">Muse SDK</a></nav>
+    </footer>
+  </main>
+  <script type="module" src="/src/pair.js"></script>
+</body>
+</html>
