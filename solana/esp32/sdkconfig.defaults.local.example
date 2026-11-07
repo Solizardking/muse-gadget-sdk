@@ -1,0 +1,3 @@
+# Copy to sdkconfig.defaults.local (git-ignored) and paste your mgst_ SDK
+# token from gadgets.muse.ai. Or export MUSE_GADGET_API_KEY before idf.py build.
+CONFIG_GADGET_SDK_TOKEN="mgst_REPLACE_ME"

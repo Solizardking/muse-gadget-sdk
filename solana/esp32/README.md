@@ -1,0 +1,412 @@
+<!--
+Copyright (c) Meta Platforms, Inc. and affiliates.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+# ESP32 Device SDK
+
+Flash this open source firmware onto any ESP32-compatible board to connect
+Muse to your home Wi-Fi. On boards with the home-network tunnel, Muse can reach
+the devices you already own and anything you build with a local HTTP API.
+
+Then hack on it: add a display, a button, or support for a board we haven't
+tried yet, and build your own Muse gadget.
+
+> **Note:** Built by hackers, for hackers, just for fun. Flashing custom
+> firmware can brick boards and void warranties. Proceed at your own risk!
+
+## What you need
+
+- **An ESP32 board.** The quickest start is the **ESP32-C5 DevKitC-1**, which
+  works as-is with its built-in status light and BOOT button. The other boards
+  that already work are listed [below](#boards).
+- **A USB cable that carries data**, not just power.
+- **A computer** running macOS or Linux.
+- **An SDK token** from [gadgets.muse.ai](https://gadgets.muse.ai/settings/sdk-tokens)
+  (Account > SDK tokens). Every gadget needs one to pair, including ones you
+  build for yourself. Read the [Gadget SDK Terms](https://gadgets.muse.ai/sdk-terms)
+  before you use it.
+- **The Muse app** on your phone, to set up the device once it's flashed.
+
+## Get going with Muse Code
+
+The fastest way to build is to let [Muse Code](https://developer.meta.com/ai/lp/muse-code/)
+do it. Install it:
+
+```sh
+curl -fsSL https://dev.meta.ai/install.sh | sh
+```
+
+Then plug in your board, and start Muse Code from this directory:
+
+```sh
+git clone https://github.com/facebookincubator/muse-gadget-sdk
+cd muse-gadget-sdk/esp32
+muse --disable-sandbox
+```
+
+The first time, Muse Code asks you to trust the workspace and sign in.
+`--disable-sandbox` lets it reach your board's USB serial port and download
+the ESP-IDF toolchain. You still approve each command before it runs. Then ask:
+
+> Build this firmware for my ESP32-C5 DevKitC-1 and flash it.
+
+Muse Code reads [`AGENTS.md`](AGENTS.md), which has everything needed to set up
+the toolchain, build for your board, flash it, and read its logs. From there,
+keep going:
+
+> Watch the serial log and tell me when it's ready to pair.
+
+> I have a Waveshare ESP32-S3 AMOLED board. Build the UI for it.
+
+> Add support for my board. It's an ESP32-S3 with 16 MB flash, a button on
+> GPIO 0 and no PSRAM.
+
+> Make the status light half as bright.
+
+Other coding agents work too. Any agent that reads `AGENTS.md` can build and
+flash from this repository. Flashing needs access to your board's USB serial
+port, so if your agent runs in a sandbox, let it run the flash and monitor
+commands outside the sandbox.
+
+## Or do it yourself
+
+### 1. Install ESP-IDF v6.0.1
+
+This firmware is built with Espressif's ESP-IDF, **version 6.0.1**. Other
+versions aren't supported. If you already have it installed, skip ahead.
+
+On macOS, install the prerequisites first with `brew install cmake ninja
+dfu-util python3`. On Linux, follow
+[Espressif's prerequisites](https://docs.espressif.com/projects/esp-idf/en/v6.0.1/esp32c5/get-started/linux-macos-setup.html).
+Then:
+
+```sh
+git clone -b v6.0.1 --recursive https://github.com/espressif/esp-idf.git ~/esp/esp-idf-v6
+~/esp/esp-idf-v6/install.sh esp32c5,esp32s3,esp32c6,esp32
+. ~/esp/esp-idf-v6/export.sh
+```
+
+Run the last line in every new terminal you build from.
+
+### 2. Build
+
+From this directory, set your SDK token, then build:
+
+```sh
+idf.py menuconfig   # ESP32 Device SDK > Muse Gadgets SDK token
+idf.py build
+```
+
+To keep the token out of `sdkconfig`, export it instead, or copy
+`sdkconfig.defaults.local.example` to the git-ignored
+`sdkconfig.defaults.local` and paste it there:
+
+```sh
+export MUSE_GADGET_API_KEY=mgst_…   # becomes CONFIG_GADGET_SDK_TOKEN
+idf.py build
+```
+
+This builds for the ESP32-C5 DevKitC-1. The firmware lands in
+`build/muse-gadget.bin`.
+
+A build without a token can get one later over serial: send the line
+`>sdk_token=mgst_…` on the board's console, and it stores the token in NVS,
+answers `@sdk_token ok` and restarts with it. A stored token takes precedence
+over the build's. The [web flasher](../web-flasher/README.md) does this for
+you after installing.
+
+Muse records a gadget's SDK token when the gadget pairs, and nowhere else. If
+you change the token on a paired gadget, or revoke the one it paired with,
+pair it again: hold the button for 5 seconds, then pair it in the Muse app.
+Until then it keeps the token it paired with, and once that token is revoked it
+can't reach Muse. The boot log warns when the gadget is paired with a token
+other than its current one.
+
+### 3. Flash
+
+Plug in the board and flash it:
+
+```sh
+idf.py -p /dev/cu.usbmodem1101 flash monitor
+```
+
+Replace the port with your board's. On macOS, `ls /dev/cu.usb*` lists the
+connected ports; on Linux, look for `/dev/ttyACM*` or `/dev/ttyUSB*`. The
+monitor shows the device's log; press `Ctrl-]` to quit. If flashing can't
+connect, hold **BOOT**, tap **RESET**, release **BOOT**, and try again.
+
+Reflashing keeps your pairing and Wi-Fi settings. To start completely fresh,
+run `idf.py -p PORT erase-flash` first.
+
+### 4. Set it up with Muse
+
+Once flashed, the status light breathes **orange**: the device is ready for
+setup. In the Muse app, turn on **Settings > Devices > Developer mode**, then
+add the device (**Settings > Devices > Add Device**, the **+** icon in the top
+right). It shows up as `MuseGadget-XXXXXX`. When the light breathes **blue**, press the **BOOT**
+button to confirm it's really you. The light turns **green** when Muse is
+connected.
+
+| Light | What it means |
+|---|---|
+| Orange, breathing | Ready for setup |
+| Blue, breathing | Press the button to confirm pairing |
+| Blue | Joining Wi-Fi and connecting to Muse |
+| Green | Connected |
+| Yellow, blinking | Reconnecting |
+| Purple | Not paired |
+| Red, blinking | Something went wrong: check the log |
+
+To reset the device and set it up again, hold the button for 5 seconds.
+
+On the experimental EchoEar-2ST, press the screen to confirm pairing; after
+pairing, hold the screen microphone to record and release it to send. See
+[EchoEar setup](devices/ostb-echoear-2st.md) for its controls and validation limits.
+
+Pairing requires an explicit press on the device, and every setup creates
+a fresh encrypted session. Because these are community devices, pairing has no
+manufacturer verification and can't prevent an active man-in-the-middle
+attack. Set it up on a network you trust.
+
+## Boards
+
+Boards marked UI run the full on-screen UI: an animated avatar, push-to-talk and
+settings. Audio and image support vary by board, so check the feature table in
+[`devices/`](devices). The others show status on a light, a ring or a simple
+status screen.
+
+| Board | What you get | Build it |
+|---|---|---|
+| ESP32-C5 DevKitC-1 | Status light and button | `idf.py build` |
+| ESP32-C6 devkit without PSRAM | Status light and button | `tools/board.sh c6-nopsram build` |
+| Espressif ESP32-S3-DevKitC-1 | Status light and button | `tools/board.sh espressif-s3-devkitc-1 build` |
+| ideaspark ESP32 with 1.9" display | Status on screen, images | `tools/board.sh ideaspark build` |
+| Waveshare ESP32-C6-LCD-1.47 | Status on screen, images | `tools/board.sh waveshare-c6-lcd-147 build` |
+| Seeed SenseCAP Indicator | Status on a 4" screen, images | `tools/board.sh sensecap-indicator build` |
+| Waveshare ESP32-S3-1.54inch-ePaper V2 | Status on a 1.54" e-paper, black and white | `tools/board.sh waveshare-s3-epaper-154 build` |
+| Seeed reTerminal E1001 | Status on a 7.5" e-paper, black and white images | `tools/board.sh reterminal-e1001 build` |
+| Seeed reTerminal E1002 | Status on a 7.3" e-paper, six-colour images | `tools/board.sh reterminal-e1002 build` |
+| Seeed reTerminal Sticky (experimental) | 3.97" portrait e-paper UI on FreeInk, touch, PDM voice notes, battery, SD and SHT40 | `tools/board.sh reterminal-sticky build` |
+| Seeed reTerminal Sticky Link status (experimental) | 3.97" e-paper status screen and SHT40 only; no Muse UI | `tools/board.sh reterminal-sticky-link build` |
+| Home Assistant Voice Preview Edition | Status on the LED ring, push-to-talk, volume dial | `tools/board.sh home-assistant-voice build` |
+| Seeed reSpeaker Lite with XIAO ESP32-S3 (experimental) | Single RGB LED, BOOT push-to-talk; 16 kHz XMOS I2S required | [Setup](devices/seeed-respeaker-lite.md) |
+| Waveshare ESP32-S3-Touch-AMOLED-1.75C | UI, push-to-talk, settings, images | see [`AGENTS.md`](AGENTS.md#boards-with-the-full-ui-by-hand) |
+| Waveshare ESP32-S3-Touch-AMOLED-1.75 | UI, push-to-talk, settings, images | see [`AGENTS.md`](AGENTS.md#boards-with-the-full-ui-by-hand) |
+| Waveshare ESP32-S3-Touch-AMOLED-2.16 | UI, push-to-talk, settings, images | see [`AGENTS.md`](AGENTS.md#boards-with-the-full-ui-by-hand) |
+| OSTB EchoEar-2ST (experimental) | UI, touch microphone and pairing confirmation, local audio | [EchoEar setup](devices/ostb-echoear-2st.md) |
+| Espressif ESP32-S3-BOX-3 | UI, touch, push-to-talk, settings, images | [BOX-3 setup](devices/esp32-s3-box-3.md) |
+| AIPI Lite | UI, push-to-talk, two-button menu, images | see [`AGENTS.md`](AGENTS.md#boards-with-the-full-ui-by-hand) |
+| Waveshare ESP32-C6-Touch-AMOLED-1.8 | UI, push-to-talk with text replies | see [`AGENTS.md`](AGENTS.md#boards-with-the-full-ui-by-hand) |
+| Waveshare ESP32-C6-Touch-AMOLED-2.06 | UI, touch, push-to-talk with text replies | `tools/muse/board.sh build c6-206` |
+| Seeed SenseCAP Watcher | UI, push-to-talk, settings, images | see [`AGENTS.md`](AGENTS.md#boards-with-the-full-ui-by-hand) |
+| M5Stack Cardputer ADV (experimental) | UI, GO/Space push-to-talk with text replies, Esc/Enter/arrow menu controls | `tools/muse/board.sh build cardputer-adv` |
+| M5Stack StickS3 | UI, push-to-talk, two-button menu, images | see [`AGENTS.md`](AGENTS.md#boards-with-the-full-ui-by-hand) |
+| M5Stack StopWatch | UI, push-to-talk, settings, images | see [`AGENTS.md`](AGENTS.md#boards-with-the-full-ui-by-hand) |
+| [Seeed XIAO ESP32-S3 1.47 Touch Display](devices/seeed-xiao-s3-147.md) | UI, USR1 push-to-talk, touch, settings, images; PDM mic, no speaker | `tools/muse/board.sh build xiao147` |
+| M5Stack CoreS3 | UI, touch, PWR push-to-talk, settings, images | see [`AGENTS.md`](AGENTS.md#boards-with-the-full-ui-by-hand) |
+| Guition JC3248W535 | UI, touch, settings, images, speaker; push-to-talk with an added I2S mic | `tools/muse/board.sh build jc3248w535` |
+| Waveshare ESP32-S3-Touch-LCD-7 | UI, touch, settings, images; no built-in audio | `tools/muse/board.sh build lcd7` |
+| Waveshare ESP32-S3-Touch-LCD-1.28 | UI, touch, settings, images; no built-in audio | `tools/muse/board.sh build lcd128` |
+| M5Stack StickC Plus2 | UI, push-to-talk, two-button menu, images | see [`AGENTS.md`](AGENTS.md#boards-with-the-full-ui-by-hand) |
+| M5Stack Core2 (v1.0) | UI, push-to-talk on the touch strip, touch menu, images | `tools/muse/board.sh build core2` |
+| Freenove FNK0104B | UI, touch, BOOT push-to-talk, settings, images | `tools/muse/board.sh build fnk0104b` |
+| VN ESP32-S3 1.83-inch NV3023 | UI, BOOT push-to-talk, Vol+/Vol- menu, images | `tools/muse/board.sh build vn183` |
+| FoloToy AI Passport (experimental) | UI, push-to-talk with text replies, three-button menu | `tools/muse/board.sh build ai-passport` |
+
+See [`devices/`](devices) for each board's hardware, features, and where to
+buy one.
+
+`tools/board.sh BOARD [build|flash|monitor|flash-monitor] [PORT]` builds each
+board in its own `build-<board>` directory with the right chip and settings.
+Boards that support images can show pictures Muse sends them:
+`tools/image_for_display.py` prepares a picture for the screen size.
+
+Boards without PSRAM, like the classic ESP32 and the ESP32-C6, run without the
+home-network tunnel, which needs more memory than they have. Muse can still
+reach the device and control it.
+
+## Power characterization
+
+Start at [Power profiling](docs/power/README.md). Read the
+[PPK2 rules](docs/power/ppk2.md) before any PPK2 use; the SenseCAP Watcher has
+its own [USB-free procedure](docs/power/sensecap-watcher.md). The opt-in
+power-test image runs an autonomous, timestamped peripheral sweep after USB
+is removed; one PPK2 process keeps source power continuous through reconnect.
+Battery isolation and USB-charger backfeed protection are required before
+output is enabled. Diagnostic figures are not production application profiles.
+
+To profile another board or device, follow the
+[porting recipe](docs/power/README.md): labelled PPK2 capture for anything the
+PPK2 can power, or the board-neutral `CONFIG_MUSE_POWER_TEST` autonomous sweep.
+Implement the [board hook header](components/muse/boards/muse_power_test_board.h)
+and board-owned matrices; no core rename is needed. The shared host CLI is
+[`tools/power/power_sweep.py`](tools/power/power_sweep.py). Its analyzer uses the
+firmware-reported board name, with `--device` as an override and Watcher as the
+legacy-only fallback.
+
+## Hack and extend it
+
+Every board's settings live in a small `devices/sdkconfig.<board>` file loaded
+on top of `sdkconfig.defaults`. To add a board, copy the closest one and change
+the chip, button pin, status light, and flash size.
+[`devices/README.md`](devices/README.md#add-a-board) covers the details, or ask
+Muse Code to do it for you.
+
+To put your own avatar on a board's screen, plug in the board and run
+`python3 tools/muse/avatar.py`. It asks your Muse to redraw its avatar as the
+board's pixel avatar, checks the result, then builds and flashes it. Your avatar
+stays out of git. See [`tools/muse/AVATAR_RECIPE.md`](tools/muse/AVATAR_RECIPE.md)
+for how it works and for boards that need the manual steps.
+
+To give Muse a command of its own, such as reading a sensor or switching a
+relay, advertise it in `link.register` and handle it in `main/app.c`.
+[`AGENTS.md`](AGENTS.md#adding-a-command) walks through it. Going the other
+way, your code can ask the VM for the chat history, or read and write files
+in the user's home on the VM, over Link's session, on every board:
+[`AGENTS.md`](AGENTS.md#requests-to-muses-vm-from-your-code) has the routes
+and limits.
+
+To show your phone's camera on a board's screen, build it with
+`MUSE_VIDEO=1 tools/muse/board.sh build <board>` and run Muse Gadgets Test
+([Android](../android/musegadgetstest), [iPhone](../ios/musegadgetstest)) on a phone on the
+same Wi-Fi, then open Phone camera on the board: the phone encodes H.264 or
+VP8, the board decodes and draws it, 30 fps on the round 466 px boards. [`../protocols/VIDEO.md`](../protocols/VIDEO.md) explains how, and
+[`AGENTS.md`](AGENTS.md#video-from-a-phone) which boards can.
+
+To work on the UI without a board, use the
+[`simulator/`](simulator/README.md) desktop preview. It runs the production UI
+and avatar renderer in a 412 x 412 SenseCAP Watcher window, supports mouse and
+keyboard input, and can render scripted screenshots without a display server.
+
+Replies from Muse are text: push-to-talk sends your voice note, Muse
+transcribes it and answers in writing, and boards with a screen show the
+answer as captions (Voice PE and reSpeaker Lite replies show up in the Muse app). Two
+things you can change:
+
+- **Shorter answers.** Ask for them in the message itself, such as "Answer in
+  one sentence."
+- **Spoken answers.** Send each reply's text to a text-to-speech API of your
+  choice and play the audio it returns. On boards with PSRAM, `start_tts` in
+  [`components/muse/muse_chat_session.cpp`](components/muse/muse_chat_session.cpp)
+  is the spot: it has the reply text, and the MP3 decoder, speaker and volume
+  are already wired up there.
+
+To talk with Muse live instead (experimental), turn on "Live voice calls with
+Muse" under Muse in `idf.py menuconfig` (`CONFIG_MUSE_REALTIME_VOICE`). It's
+offered on boards with the full UI and PSRAM and on the Voice PE and reSpeaker
+Lite. The DevKitC-1 and other boards without a mic and speaker don't have it,
+and builds without it don't change. With it on:
+
+- **StopWatch:** hold yellow to talk or interrupt playback; release to let Muse
+  answer without ending the call. A capture tail of up to 120 ms preserves the
+  last syllable. Tap blue to hang up. With calls built in, yellow is the talk
+  button and blue the speaker button (mute outside a call), the other way round
+  from builds without them; red stays power. Use **Settings > Sound > Voice notes** for
+  the old note-and-text mode. Interrupting playback does not cancel detached
+  background work, whose results may arrive later.
+- **Other boards:** tap the talk button to start a call, press again to hang up;
+  holding still sends a voice note. The mic is off while Muse talks, except on
+  the Voice PE when its audio chip reports echo cancellation.
+- A call also ends when Muse ends it, after 45 seconds of quiet (not counting
+  time Muse is still working on something), or after 15 minutes. Muse may not
+  hang up by itself when it says goodbye: press to end the call. If the
+  connection drops mid-call, the gadget ends that call on Muse when it
+  reconnects (not after a power loss or restart: Muse ends it a minute or so
+  later).
+- On the Voice PE, the mute switch hangs up, and nothing the mic picked up
+  after it went on is sent.
+- Muse doesn't say hello unless you turn that on
+  (`CONFIG_MUSE_REALTIME_VOICE_GREETING`).
+- The Muse VM has to accept voice calls from the gadget.
+
+A few things worth knowing:
+
+- Your SDK token ships inside the firmware, or sits in NVS if you set it over
+  serial, so treat it as an identifier rather than a password. If it leaks,
+  revoke it on gadgets.muse.ai, generate a new one, and rebuild or send the
+  new one over serial.
+- **We strongly recommend enabling NVS encryption** if your board supports it.
+  NVS stores Wi-Fi credentials and device tokens in flash; without encryption,
+  anyone with physical access to the board can read them. Enable it with
+  `CONFIG_HOMEHUB_NVS_ENCRYPTION` in `idf.py menuconfig` (under "ESP32 Device
+  SDK"). The encryption key is derived from an HMAC key in eFuse, which is
+  generated automatically on first boot if the eFuse block is available.
+- Builds are version `999.0.0`. Over-the-air updates are off by default; the
+  boards that run the full on-screen UI turn them on. Change it with
+  `CONFIG_HOMEHUB_OTA_ENABLED` in `idf.py menuconfig`, and set a version with
+  `idf.py -DPROJECT_VER=1.0.0 build`.
+- Each build keeps its generated settings in its build directory
+  (`build/sdkconfig`). If you change `sdkconfig.defaults` or a board file,
+  delete the build directory so the change takes effect.
+- Builds are signed with the included development key and never turn on
+  Secure Boot, so you can reflash your board as often as you like.
+
+## Tests
+
+The tests run on your computer, with no board attached:
+
+```sh
+python3 -m unittest discover -s tests -p 'test_*.py'
+```
+
+Run `idf.py build` once first so the downloaded components are in place.
+
+Two crypto tests are skipped unless the host has what they need. Install the
+host Mbed TLS library (`brew install mbedtls pkgconf` on macOS,
+`apt-get install libmbedtls-dev pkg-config` on Debian or Ubuntu), and run the
+tests from a terminal where you ran ESP-IDF's `export.sh`, which sets
+`IDF_PATH`. The last line of the output shows `skipped=` if any were left out.
+
+## Community
+
+Meet other hackers who are building and customizing Muse gadgets in our
+community [Discord](https://discord.gg/3bhjCkZdd6). Get inspired, support each
+other, and share what you make.
+
+## License
+
+The ESP32 Device SDK is licensed under the Apache License, Version 2.0, found
+in [`LICENSE`](../LICENSE), except for these third-party files, which keep
+their upstream licenses:
+
+- [`components/minimp3/include/minimp3.h`](components/minimp3), the MP3
+  decoder, is CC0-1.0. See [`components/minimp3/LICENSE`](components/minimp3/LICENSE).
+- [`main/pixel_font.c`](main/pixel_font.c), the Adafruit GFX font, is
+  BSD-2-Clause, as its header says.
+- [`components/muse/boards/ostb_echoear_display_init.h`](components/muse/boards/ostb_echoear_display_init.h),
+  the ST77916 panel initialization table from 78/xiaozhi-esp32, is MIT, as its
+  retained upstream notice says.
+- [`main/epd_ssd1677.c`](main/epd_ssd1677.c), the reTerminal Sticky SSD1677
+  driver based on the Seeed-reTerminal-E10xx-Firmware refresh sequence (the
+  Sticky's Link status profile), is MIT and retains the source's copyright and
+  license notice.
+- The JD9853A initialization sequence in
+  [`components/muse/boards/board_seeed_xiao_s3_147.c`](components/muse/boards/board_seeed_xiao_s3_147.c),
+  adapted from Seeed-Studio/Seeed_GFX2, is MIT. See
+  [`devices/licenses/Seeed_GFX2.txt`](devices/licenses/Seeed_GFX2.txt).
+- [`components/muse/eink/fonts/`](components/muse/eink/fonts/), the e-ink UI's
+  fonts, are subsets of Montserrat (SIL OFL 1.1), unscii (public domain) and
+  Font Awesome 5 Free (SIL OFL 1.1); see its README.
+- [`components/tinyh264/src`](components/tinyh264), the H.264 decoder, is the
+  Android Open Source Project's (via udevbe/tinyh264), Apache-2.0 under its
+  copyright. See [`components/tinyh264/LICENSE`](components/tinyh264/LICENSE).
+- [`components/libvpx_vp8/src`](components/libvpx_vp8), the VP8 decoder, is
+  libvpx v1.16.0's, trimmed: BSD-3-Clause under the WebM Project authors'
+  copyright, with Google's patent grant. See
+  [`components/libvpx_vp8/LICENSE`](components/libvpx_vp8/LICENSE) and
+  [`PATENTS`](components/libvpx_vp8/PATENTS).
+
+ESP-IDF components fetched at build time (into `managed_components/`) are
+under their own licenses.

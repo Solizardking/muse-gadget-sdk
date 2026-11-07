@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The premiere official open-source home of all Solana gadgets and hardware. Host programs, ESP32 and Linux SDKs, Android and iPhone test apps, Solana OS firmware, the web flasher, community device skills, and Pocket Wallet.">
+<title>Solana Gadget Kit — the premiere open-source home of Solana gadgets and hardware</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --ink: #e7f6ef;
+    --dim: #8aa899;
+    --line: #1c3b32;
+    --face: #07140f;
+    --paper: #030806;
+    --mint: #b7f0c8;
+    --coral: #f0c1a2;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.5 "Iowan Old Style", Palatino, Georgia, serif;
+  }
+  a { color: var(--mint); }
+  main { max-width: 980px; margin: 0 auto; padding: 28px 20px 80px; }
+  header { max-width: 68ch; }
+  .kicker {
+    margin: 0 0 10px;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mint);
+  }
+  h1 {
+    margin: 0 0 12px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1.15;
+  }
+  h2 {
+    margin: 0 0 8px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    font-size: 1.45rem;
+  }
+  p { color: var(--dim); }
+  header p { max-width: 68ch; }
+  nav.jumps { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 18px 0 0; }
+  nav.jumps a { font-family: ui-monospace, Menlo, monospace; font-size: 13px; }
+  .stage {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 28px;
+    padding-top: 8px;
+  }
+  .lcd {
+    width: 240px;
+    height: 240px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 50% 42%, #123528 0%, var(--face) 62%, #020504 100%);
+    border: 10px solid #0c1c16;
+    box-shadow: 0 0 0 1px #245445, inset 0 0 40px #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 28px;
+    flex: 0 0 auto;
+  }
+  .lcd strong {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+  }
+  .lcd span { margin-top: 10px; font-size: 15px; color: var(--ink); }
+  .lcd.expired strong, .lcd.cancelled strong { color: var(--coral); }
+  button {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 8px 14px;
+    margin: 0 8px 8px 0;
+    font: inherit;
+    cursor: pointer;
+  }
+  button[aria-pressed="true"] { border-color: #8ddec0; color: #d9ffe9; }
+  ul.notes { padding-left: 18px; color: var(--dim); margin: 8px 0 0; }
+  section { margin-top: 56px; }
+  .lede { max-width: 68ch; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+  }
+  article.card {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px 16px;
+    background: #06110d;
+  }
+  article.card h3 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    font-weight: 500;
+  }
+  article.card p { margin: 0; font-size: 0.95rem; }
+  article.card code, table code {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+    font-size: 0.82em;
+    color: var(--ink);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    font-size: 0.95rem;
+  }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 10px 8px;
+    border-top: 1px solid var(--line);
+  }
+  th {
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dim);
+    font-weight: 500;
+  }
+  td.path { white-space: nowrap; }
+  .warn { color: var(--coral); }
+  .families h3 { margin: 22px 0 8px; font-size: 1.05rem; font-weight: 500; }
+  .families ul { margin: 0; padding-left: 18px; color: var(--dim); }
+  .families li { margin: 4px 0; }
+  footer {
+    margin-top: 56px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--dim);
+    font-size: 0.92rem;
+    max-width: 68ch;
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="kicker">Solana Gadget Kit</p>
+    <h1>The premiere official open-source home of all Solana gadgets and hardware.</h1>
+    <p>Host programs you can run on a computer, the 240×240 round review surface, the <a href="../../esp32/README.md">ESP32</a> and <a href="../../linux/README.md">Linux</a> device SDKs, the <a href="../../android/musegadgetstest/README.md">Android</a> and <a href="../../ios/musegadgetstest/README.md">iPhone</a> test apps, Solana OS 0.4.4 for the BP26 badge, the <a href="../../scripts/flash-solana-os.sh">badge flash script</a>, the <a href="../../web-flasher/index.html">browser flasher</a>, the <a href="../../skills/CATALOG.md">community device skills</a>, and <a href="../../pocket-wallet/README.md">Pocket Wallet</a> in full. The kit documents live in the <a href="../../README.md">root README</a>. Source: <a href="https://github.com/themusebook/solana-gadget-kit">github.com/themusebook/solana-gadget-kit</a>.</p>
+    <nav class="jumps" aria-label="On this page">
+      <a href="#screen">Review surface</a>
+      <a href="#gadgets">Gadgets</a>
+      <a href="#sdks">SDKs</a>
+      <a href="#scripts">Scripts</a>
+      <a href="#web-flasher">Web flasher</a>
+      <a href="#skills">Skills</a>
+      <a href="#pocket-wallet">Pocket Wallet</a>
+      <a href="#project">Project</a>
+    </nav>
+  </header>
+
+  <section id="screen" aria-labelledby="screen-title">
+    <h2 id="screen-title">240×240 review surface</h2>
+    <p class="lede">The on-device hardware wallet signs only after a physical confirm. Pocket Wallet stays the phone-approval path and cannot sign or submit. Robotics motion is applied only for a matching Solana confirmation.</p>
+    <div class="stage">
+      <div id="lcd" class="lcd" role="img" aria-label="240 by 240 home">
+        <strong id="headline">HOME</strong>
+        <span id="detail">Solana gadget</span>
+      </div>
+      <div>
+        <button type="button" data-screen="home" aria-pressed="true">Home</button>
+        <button type="button" data-screen="review">Review</button>
+        <button type="button" data-screen="expired">Expired</button>
+        <button type="button" data-screen="cancelled">Cancelled</button>
+        <ul class="notes">
+          <li>Home is idle. No command is bound.</li>
+          <li>Review shows the exact payload before a signature exists.</li>
+          <li>Expired and cancelled refuse the robotics actuator.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="gadgets" aria-labelledby="gadgets-title">
+    <h2 id="gadgets-title">Gadgets and hardware in this tree</h2>
+    <p class="lede">These programs do not flash a board, open a network connection, or read a provider key. Build them with <code>make -C solana test examples</code>.</p>
+    <div class="grid">
+      <article class="card">
+        <h3>Hardware wallet</h3>
+        <p><a href="../examples/hardware_wallet.c"><code>hardware_wallet</code></a> refuses to export the secret, shows the review line, and signs only after a physical confirm. The public demonstration seed is not a funded key.</p>
+      </article>
+      <article class="card">
+        <h3>LCD status</h3>
+        <p><a href="../examples/lcd_status.c"><code>lcd_status</code></a> drives home, review summary, expired, and cancelled on the 240×240 surface.</p>
+      </article>
+      <article class="card">
+        <h3>Robotics gate</h3>
+        <p><a href="../examples/robotics_gate.c"><code>robotics_gate</code></a> applies <code>servo:15</code> only for a matching confirmation. Mismatch, expiry, cancel, and a missing confirmation are refused.</p>
+      </article>
+      <article class="card">
+        <h3>Solana OS check</h3>
+        <p><a href="../examples/solana_os_check.c"><code>solana_os_check</code></a> checks the Solana OS 0.4.4 bundle against <code>SHA256SUMS</code>. Flash notes are in <a href="../docs/solana-os.md">solana/docs/solana-os.md</a>.</p>
+      </article>
+      <article class="card">
+        <h3>Portfolio preview</h3>
+        <p><a href="../examples/portfolio_preview.c"><code>portfolio_preview</code></a> renders a fixed SOL/USDC quote. It does not request a live quote or submit a trade.</p>
+      </article>
+      <article class="card">
+        <h3>Solana BP26 badge</h3>
+        <p>Prebuilt Solana OS 0.4.4 for the ESP32-C5 badge, in <a href="../../firmware/solana-os/0.4.4/README.txt"><code>firmware/solana-os/0.4.4</code></a>. Flash it with <a href="../../scripts/flash-solana-os.sh"><code>scripts/flash-solana-os.sh</code></a> after the checksum check. Notes: <a href="../../docs/solana-os.md">docs/solana-os.md</a>.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="sdks" aria-labelledby="sdks-title">
+    <h2 id="sdks-title">SDKs, phone apps, and badge firmware</h2>
+    <p class="lede">The device SDKs and the prebuilt Solana OS images. Flashing custom firmware can brick a board. The phone apps are samples. They do not hold a wallet key.</p>
+    <table>
+      <thead>
+        <tr><th>Path</th><th>What is included</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="path"><a href="../../android/musegadgetstest/README.md">android/</a></td>
+          <td>Muse Gadgets Test. Plain Java. Streams the camera, color bars, or a sample clip to a gadget display over Wi-Fi. Open <code>android/musegadgetstest</code> in Android Studio, or use <code>./gradlew installDebug</code>. <a href="../../android/musegadgetstest/tools/livebench/README.md">livebench</a> measures that live path.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../ios/musegadgetstest/README.md">ios/</a></td>
+          <td>The iPhone app of the same test. Swift, plus a little C in <code>native/</code>. Xcode 16 or later, iOS 17 or later. Open <code>ios/musegadgetstest/MuseGadgetsTest.xcodeproj</code>.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../esp32/README.md">esp32/</a></td>
+          <td>ESP32 Device SDK. Firmware that joins Wi-Fi and pairs with the Muse app. Board overlays are in <a href="../../esp32/devices/README.md">esp32/devices</a>. The desktop UI preview is in <a href="../../esp32/simulator/README.md">esp32/simulator</a>. Build steps live in <a href="../../esp32/AGENTS.md">esp32/AGENTS.md</a>.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../linux/README.md">linux/</a></td>
+          <td>Linux Device SDK. Turns a Raspberry Pi, or another Linux machine with Bluetooth LE, into a Muse gadget. The installer is <a href="../../linux/install.sh">linux/install.sh</a>. Extra notes: <a href="../../linux/docs/fedora.md">Fedora</a> and <a href="../../linux/docs/rdk-x5.md">RDK-X5</a>. Build steps live in <a href="../../linux/AGENTS.md">linux/AGENTS.md</a>.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../firmware/solana-os/0.4.4/README.txt">firmware/</a></td>
+          <td>Prebuilt Solana OS 0.4.4 for the BP26 badge: <code>bootloader.bin</code>, <code>partition-table.bin</code>, <code>ota_data_initial.bin</code>, and <code>solana_os.bin</code>. Check <a href="../../firmware/solana-os/0.4.4/SHA256SUMS">SHA256SUMS</a> before flashing. Offsets are in <a href="../../firmware/solana-os/0.4.4/flash_args">flash_args</a>. The browser manifest is <a href="../../firmware/solana-os/0.4.4/manifest.json">manifest.json</a>.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../docs/solana-os.md">docs/</a></td>
+          <td>How to flash that bundle from a terminal: port names, 460800 baud, and what <code>--erase-settings</code> and <code>--erase-all</code> clear.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="scripts" aria-labelledby="scripts-title">
+    <h2 id="scripts-title">Scripts</h2>
+    <p class="lede"><a href="../../scripts/flash-solana-os.sh"><code>scripts/flash-solana-os.sh</code></a> flashes Solana OS 0.4.4 onto a Solana BP26 badge (ESP32-C5, CH340) with esptool 5. It checks <code>SHA256SUMS</code> first, writes at 460800 baud, and can erase settings or internal storage when you pass the matching flag.</p>
+    <div class="grid">
+      <article class="card">
+        <h3>Update</h3>
+        <p><code>scripts/flash-solana-os.sh PORT</code> writes the bundle and keeps Wi-Fi, calibration, theme, and server address.</p>
+      </article>
+      <article class="card">
+        <h3>Erase settings</h3>
+        <p><code>--erase-settings</code> also clears <code>0x9000</code> for <code>0x6000</code> bytes. The badge says hello again with a new secret.</p>
+      </article>
+      <article class="card">
+        <h3>Erase all</h3>
+        <p><code>--erase-all</code> also clears internal storage at <code>0x11000</code> and <code>0x820000</code>, like a new badge.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="web-flasher" aria-labelledby="flasher-title">
+    <h2 id="flasher-title">Web flasher</h2>
+    <p class="lede"><a href="../../web-flasher/README.md">web-flasher/</a> is the GitHub Pages page that installs Muse gadget firmware from Chrome or Edge over Web Serial, using ESP Web Tools 10.4.0. CI packages the boards in <a href="../../web-flasher/boards.json">boards.json</a> and deploys on pushes to <code>main</code>. The page builds ship without an SDK token. After install, <a href="../../web-flasher/sdk-token.js">sdk-token.js</a> sends the maker’s token over serial once. The Solana BP26 entry points back at <a href="../../scripts/flash-solana-os.sh">scripts/flash-solana-os.sh</a> when you need 460800 baud or an erase.</p>
+    <table>
+      <thead>
+        <tr><th>Path</th><th>What is included</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="path"><a href="../../web-flasher/index.html">index.html</a></td>
+          <td>The installer page. It pins <code>esp-web-tools@10.4.0</code>.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../web-flasher/boards.json">boards.json</a></td>
+          <td>Board picker: id, name, optional USB ids, pacing, and the note shown for that board.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../web-flasher/flasher-hooks.js">flasher-hooks.js</a></td>
+          <td>Limits the port picker to the board’s USB devices and refuses a flash the partition table cannot fit.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../web-flasher/paced-serial.js">paced-serial.js</a></td>
+          <td>Small Web Serial writes with a pause, for USB-UART bridges that drop bytes. Used by the SenseCAP Watcher.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../web-flasher/sdk-token.js">sdk-token.js</a></td>
+          <td>Checks an <code>mgst_</code> token and sends it as <code>&gt;sdk_token=…</code>. The gadget stores it in NVS.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../web-flasher/make_manifest.py">make_manifest.py</a></td>
+          <td>Copies one board’s flash images and writes an ESP Web Tools manifest. Images stay at their own offsets, so an update does not wipe NVS.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../web-flasher/README.md">README.md</a></td>
+          <td>How the page is built, how a token is set, and how to add a board.</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="families">
+      <h3>Boards in the picker</h3>
+      <ul>
+        <li>Espressif ESP32-C5 DevKitC-1</li>
+        <li>Espressif ESP32-S3-DevKitC-1 (N8R8)</li>
+        <li>Espressif ESP32-S3-BOX-3</li>
+        <li>M5Stack CoreS3</li>
+        <li>Waveshare ESP32-S3-Touch-LCD-1.85C</li>
+        <li>Seeed Studio XIAO ESP32-S3 1.47&quot; Touch Display</li>
+        <li>Seeed Studio SenseCAP Watcher</li>
+        <li>Seeed Studio SenseCAP Indicator</li>
+        <li>Seeed Studio reTerminal E1001 (7.5&quot; e-paper)</li>
+        <li>Seeed Studio reTerminal E1002 (7.3&quot; colour e-paper)</li>
+        <li>Seeed Studio reTerminal Sticky (3.97&quot; e-paper, experimental)</li>
+        <li>Solana BP26 badge: Solana OS 0.4.4 (prebuilt)</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="skills" aria-labelledby="skills-title">
+    <h2 id="skills-title">Community device skills</h2>
+    <p class="lede"><a href="../../skills/README.md">skills/</a> holds 44 community device skills: 43 device families and one shared Google Cast skill. The index is <a href="../../skills/CATALOG.md">skills/CATALOG.md</a>. These are community write-ups for hardware people already run. They are not official Muse product integrations. Each skill is Markdown only.</p>
+    <div class="families">
+      <h3>Shared protocol</h3>
+      <ul>
+        <li><a href="../../skills/gadget-google-cast/SKILL.md">Google Cast</a> — media, volume, and existing speaker groups.</li>
+      </ul>
+      <h3>Lights and plugs</h3>
+      <ul>
+        <li><a href="../../skills/gadget-lutron-smart-bridges/SKILL.md">Lutron Smart Bridges</a> — lights and shades via HAP or LEAP.</li>
+        <li><a href="../../skills/gadget-shelly-plugs/SKILL.md">Shelly Gen 4 plugs</a> — switching and power metering.</li>
+        <li><a href="../../skills/gadget-philips-hue-bridges/SKILL.md">Philips Hue bridges</a> — lights, dimming, and scenes.</li>
+        <li><a href="../../skills/gadget-elgato-key-light/SKILL.md">Elgato Key Light</a> — power, brightness, and color temperature.</li>
+        <li><a href="../../skills/gadget-meross-smart-plugs/SKILL.md">Meross smart plugs</a> — local switching with supplied keys.</li>
+        <li><a href="../../skills/gadget-tplink-kasa-ep10/SKILL.md">TP-Link Kasa EP10</a> — relay and LED.</li>
+        <li><a href="../../skills/gadget-tplink-kasa-ep25/SKILL.md">TP-Link Kasa EP25</a> — relay, LED, energy, and supported auto-off.</li>
+      </ul>
+      <h3>Speakers, displays, and TVs</h3>
+      <ul>
+        <li><a href="../../skills/gadget-apple-homepod-mini/SKILL.md">Apple HomePod mini</a> — volume, transport, and grouping.</li>
+        <li><a href="../../skills/gadget-apple-tv-4k/SKILL.md">Apple TV 4K</a> — paired remote, apps, and keyboard.</li>
+        <li><a href="../../skills/gadget-freebox-player-pop/SKILL.md">Freebox Player Pop</a> — Cast and Android TV Remote v2.</li>
+        <li><a href="../../skills/gadget-google-home-speaker/SKILL.md">Google Home</a> — audio-only Cast.</li>
+        <li><a href="../../skills/gadget-google-home-max/SKILL.md">Google Home Max</a> — audio-only Cast.</li>
+        <li><a href="../../skills/gadget-google-nest-audio/SKILL.md">Google Nest Audio</a> — audio-only Cast.</li>
+        <li><a href="../../skills/gadget-google-nest-hub/SKILL.md">Google Nest Hub</a> — generation-dependent Cast media.</li>
+        <li><a href="../../skills/gadget-google-nest-hub-max/SKILL.md">Google Nest Hub Max</a> — Cast media.</li>
+        <li><a href="../../skills/gadget-google-nest-mini/SKILL.md">Google Nest Mini / Home Mini</a> — audio-only Cast.</li>
+        <li><a href="../../skills/gadget-google-pixel-tablet/SKILL.md">Google Pixel Tablet</a> — Cast in supported docked or locked Hub Mode.</li>
+        <li><a href="../../skills/gadget-google-tv-streamer/SKILL.md">Google TV Streamer</a> — Cast and Android TV Remote v2.</li>
+        <li><a href="../../skills/gadget-lg-webos-tvs/SKILL.md">LG webOS TVs</a> — local remote, apps, and inputs.</li>
+        <li><a href="../../skills/gadget-logitech-squeezebox/SKILL.md">Logitech Squeezebox</a> — playback through an existing Lyrion server.</li>
+        <li><a href="../../skills/gadget-roku-tvs-and-players/SKILL.md">Roku TVs and players</a> — local remote, apps, text, and power over ECP.</li>
+        <li><a href="../../skills/gadget-samsung-tizen-tvs/SKILL.md">Samsung Tizen TVs</a> — local remote and model-specific Frame Art.</li>
+        <li><a href="../../skills/gadget-sonos-speakers/SKILL.md">Sonos speakers</a> — playback, volume, and grouping.</li>
+        <li><a href="../../skills/gadget-vizio-d40f-g9/SKILL.md">VIZIO D40f-G9</a> — SmartCast management.</li>
+      </ul>
+      <h3>Printers and appliances</h3>
+      <ul>
+        <li><a href="../../skills/gadget-brother-printers/SKILL.md">Brother printers</a> — IPP printing and job status.</li>
+        <li><a href="../../skills/gadget-hp-color-laserjet-pro-m254dw/SKILL.md">HP Color LaserJet Pro M254dw</a> — IPP printing and status.</li>
+        <li><a href="../../skills/gadget-epson-printers/SKILL.md">Epson printers</a> — IPP printing, and eSCL scanning where supported.</li>
+        <li><a href="../../skills/gadget-dyson-pure-hot-cool-hp04/SKILL.md">Dyson HP04</a> — local status and supported fan and heating controls.</li>
+        <li><a href="../../skills/gadget-miele-g7566-dishwasher/SKILL.md">Miele G 7566</a> — local status. Commands only if the appliance supports them.</li>
+        <li><a href="../../skills/gadget-moonraker-3d-printers/SKILL.md">Moonraker 3D printers</a> — status and print job controls for an existing service.</li>
+      </ul>
+      <h3>Vacuums</h3>
+      <ul>
+        <li><a href="../../skills/gadget-irobot-roomba-braava/SKILL.md">iRobot Roomba / Braava</a> — compatible local status and cleaning commands.</li>
+        <li><a href="../../skills/gadget-roborock-vacuums/SKILL.md">Roborock</a> — compatible encrypted local TCP control.</li>
+        <li><a href="../../skills/gadget-eufy-robovac-tuya/SKILL.md">eufy RoboVac, Tuya models</a> — mapped local commands.</li>
+      </ul>
+      <h3>Gateways and firmware families</h3>
+      <ul>
+        <li><a href="../../skills/gadget-ratgdo-v32-garage-door/SKILL.md">ratgdo v32</a> — installed garage-door, light, and lock entities.</li>
+        <li><a href="../../skills/gadget-zigbee2mqtt-gateways/SKILL.md">Zigbee2MQTT</a> — devices the existing gateway already exposes.</li>
+        <li><a href="../../skills/gadget-espsomfy-rts/SKILL.md">ESPSomfy-RTS</a> — configured shade and group controls.</li>
+        <li><a href="../../skills/gadget-sonoff-rf-bridge/SKILL.md">Sonoff RF Bridge R2</a> — approved fixed-code capture and transmit.</li>
+        <li><a href="../../skills/gadget-velux-klf200/SKILL.md">VELUX KLF200</a> — commissioned nodes, positions, and scenes.</li>
+        <li><a href="../../skills/gadget-esphome-devices/SKILL.md">ESPHome devices</a> — entities exposed by installed firmware.</li>
+        <li><a href="../../skills/gadget-tuya-wifi-devices/SKILL.md">Tuya Wi-Fi devices</a> — confirmed local protocol, keys, and datapoint map.</li>
+      </ul>
+      <h3>Read-only network and camera access</h3>
+      <ul>
+        <li><a href="../../skills/gadget-unifi-network-consoles/SKILL.md">UniFi Network consoles</a> — local inventory and status.</li>
+        <li><a href="../../skills/gadget-wyze-rtsp-cameras/SKILL.md">Wyze RTSP cameras</a> — viewing and capture when compatible legacy firmware is already installed.</li>
+        <li><a href="../../skills/gadget-yi-hack-cameras/SKILL.md">yi-hack cameras</a> — snapshots and TCP streams when compatible firmware is already installed.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="pocket-wallet" aria-labelledby="pocket-title">
+    <h2 id="pocket-title">Pocket Wallet, included</h2>
+    <p class="lede">Phone approval for the round-screen gadget. A physical press on the ESP32 advances to phone review. That path cannot sign or submit. Signing stays in the installed Solana wallet. The running app is <a href="https://wallet.musebook.trade">wallet.musebook.trade</a>, with device setup at <a href="https://wallet.musebook.trade/pair">/pair</a>.</p>
+    <table>
+      <thead>
+        <tr><th>Path</th><th>What is included</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/README.md">README.md</a></td>
+          <td>How to start the API and the dashboard, and which credentials stay on the server.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/ARCHITECTURE.md">ARCHITECTURE.md</a></td>
+          <td>Browser, loopback API, Muse companion, and the ESP32 confirmation core.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/BOM.md">BOM.md</a></td>
+          <td>Waveshare ESP32-S3-Touch-LCD-1.28 bill of materials. Shopping research only.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/web/index.html">web/</a></td>
+          <td>Vite dashboard and the <a href="../../pocket-wallet/web/pair/index.html">pair</a> page. <a href="../../pocket-wallet/vite.config.js">vite.config.js</a> proxies <code>/api</code> to port 8787.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/api/OPENAPI.md">api/</a></td>
+          <td>Express API: sessions, quotes, intents, providers, and Clawd handoff. Device tokens cannot submit.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/firmware/README.md">firmware/</a></td>
+          <td>Portable confirmation component and the 1.28-inch board pin map. A press moves review to phone. It does not sign.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/linux/README.md">linux/</a></td>
+          <td>Raspberry Pi companion. Read-only Muse commands. No wallet keys on the device.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/cloudflare/wrangler.jsonc">cloudflare/</a></td>
+          <td>Worker proxy in front of the Railway app for <code>wallet.musebook.trade</code>.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/scripts/muse-sdk.mjs">scripts/</a></td>
+          <td>SDK token check, firmware-config helper, secret scan, and the Linux SDK prepare step.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/docs/SECURITY.md">docs/</a></td>
+          <td>Security, pairing, voice, mobile, Muse SDK, Railway, brand, and verification.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/.github/workflows/check.yml">.github/</a></td>
+          <td>CI runs <code>npm run check</code> on Node 22 and Python 3.11.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/.vscode/settings.json">.vscode/</a></td>
+          <td>Editor setting that points CMake at the Pocket Wallet firmware component.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/Dockerfile">Dockerfile</a></td>
+          <td>Production image. Builds the dashboard, then serves it with the API on port 8787.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/package.json">package.json</a></td>
+          <td>App scripts. Lockfile is <a href="../../pocket-wallet/package-lock.json">package-lock.json</a>.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/LICENSE">LICENSE</a></td>
+          <td>Apache-2.0. Upstream Muse notices stay in place.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../pocket-wallet/.gitignore">.gitignore</a></td>
+          <td>Git ignore, plus <a href="../../pocket-wallet/.dockerignore">.dockerignore</a> and <a href="../../pocket-wallet/.railwayignore">.railwayignore</a>.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="warn">No hardware purchase, deployment, wallet creation, or funded trade is claimed by this page.</p>
+  </section>
+
+  <section id="project" aria-labelledby="project-title">
+    <h2 id="project-title">Project</h2>
+    <p class="lede">The kit’s own documents, at the repository root.</p>
+    <table>
+      <thead>
+        <tr><th>Path</th><th>What is included</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="path"><a href="../../README.md">README.md</a></td>
+          <td>The premiere home statement, Muse gadget SDKs, Solana OS for the BP26 badge, and the third-party license table.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../LICENSE">LICENSE</a></td>
+          <td>Apache License 2.0.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../CONTRIBUTING.md">CONTRIBUTING.md</a></td>
+          <td>Pull requests, the Contributor License Agreement, and where to report bugs.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../CODE_OF_CONDUCT.md">CODE_OF_CONDUCT.md</a></td>
+          <td>The project pledge and the expected standard for participation.</td>
+        </tr>
+        <tr>
+          <td class="path"><a href="../../.gitignore">.gitignore</a></td>
+          <td>Ignores editor files, Python caches, <code>.sdk-token</code>, and <code>/backups/</code>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    <p>Apache-2.0. The hardware wallet signs only inside a bounded physical confirm. Pocket Wallet’s physical press never substitutes for wallet approval.</p>
+  </footer>
+</main>
+<script>
+const frames = {
+  home: ["HOME", "Solana gadget", "240 by 240 home"],
+  review: ["REVIEW", "transfer 0.01 SOL", "240 by 240 review transfer 0.01 SOL"],
+  expired: ["EXPIRED", "window closed", "240 by 240 expired"],
+  cancelled: ["CANCELLED", "command dropped", "240 by 240 cancelled"]
+};
+const lcd = document.getElementById("lcd");
+const headline = document.getElementById("headline");
+const detail = document.getElementById("detail");
+document.querySelectorAll("button[data-screen]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const frame = frames[button.dataset.screen];
+    headline.textContent = frame[0];
+    detail.textContent = frame[1];
+    lcd.className = "lcd " + button.dataset.screen;
+    lcd.setAttribute("aria-label", frame[2]);
+    document.querySelectorAll("button[data-screen]").forEach((other) => {
+      other.setAttribute("aria-pressed", other === button ? "true" : "false");
+    });
+  });
+});
+</script>
+</body>
+</html>

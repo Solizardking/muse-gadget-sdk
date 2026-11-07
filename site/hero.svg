@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-label="Solana Gadget Kit, a round LCD that signs only after a physical confirm">
+  <title>Solana Gadget Kit</title>
+  <defs>
+    <radialGradient id="glass" cx="50%" cy="42%" r="60%">
+      <stop offset="0%" stop-color="#16382c"/>
+      <stop offset="62%" stop-color="#07140f"/>
+      <stop offset="100%" stop-color="#020504"/>
+    </radialGradient>
+    <linearGradient id="sol" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#14F195"/>
+      <stop offset="100%" stop-color="#9945FF"/>
+    </linearGradient>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" fill="none" stroke="#14F195" stroke-opacity="0.16"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="640" fill="#07080b"/>
+  <rect width="1200" height="640" fill="url(#grid)">
+    <animate attributeName="y" values="0;-28" dur="4s" repeatCount="indefinite"/>
+  </rect>
+  <text x="72" y="92" fill="#14F195" font-family="ui-monospace,monospace" font-size="18" letter-spacing="6">SOLANA GADGET KIT</text>
+  <text x="72" y="168" fill="#f4f1ea" font-family="Georgia,serif" font-size="64">Hardware that</text>
+  <text x="72" y="236" fill="#f4f1ea" font-family="Georgia,serif" font-size="64">waits for Solana.</text>
+  <text x="72" y="300" fill="#9eb0a6" font-family="ui-monospace,monospace" font-size="18">240×240 LCD · on-device Ed25519 · robotics only on a matching confirm</text>
+  <g>
+    <text x="72" y="390" fill="#14F195" font-family="ui-monospace,monospace" font-size="22">HOME</text>
+    <animate attributeName="opacity" values="1;1;0;0;0;0;0;0" keyTimes="0;0.2;0.25;0.45;0.5;0.7;0.75;1" dur="8s" repeatCount="indefinite"/>
+  </g>
+  <g opacity="0">
+    <text x="72" y="390" fill="#14F195" font-family="ui-monospace,monospace" font-size="22">REVIEW · transfer 0.01 SOL</text>
+    <animate attributeName="opacity" values="0;0;1;1;0;0;0;0" keyTimes="0;0.2;0.25;0.45;0.5;0.7;0.75;1" dur="8s" repeatCount="indefinite"/>
+  </g>
+  <g opacity="0">
+    <text x="72" y="390" fill="#14F195" font-family="ui-monospace,monospace" font-size="22">APPLIED · servo:15</text>
+    <animate attributeName="opacity" values="0;0;0;0;1;1;0;0" keyTimes="0;0.2;0.25;0.45;0.5;0.7;0.75;1" dur="8s" repeatCount="indefinite"/>
+  </g>
+  <g opacity="0">
+    <text x="72" y="390" fill="#f0c1a2" font-family="ui-monospace,monospace" font-size="22">REFUSED · expired</text>
+    <animate attributeName="opacity" values="0;0;0;0;0;0;1;1" keyTimes="0;0.2;0.25;0.45;0.5;0.7;0.75;1" dur="8s" repeatCount="indefinite"/>
+  </g>
+  <g transform="translate(920 300)">
+    <circle r="168" fill="none" stroke="url(#sol)" stroke-width="8">
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="12s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="150" fill="url(#glass)" stroke="#245445" stroke-width="10"/>
+    <text y="-8" text-anchor="middle" fill="#14F195" font-family="ui-monospace,monospace" font-size="18" letter-spacing="3">240×240</text>
+    <text y="24" text-anchor="middle" fill="#f4f1ea" font-family="Georgia,serif" font-size="28">LCD</text>
+    <rect x="-70" y="70" width="140" height="3" fill="#14F195" opacity="0.7">
+      <animate attributeName="y" values="-90;90" dur="2.8s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0;0.8;0" dur="2.8s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+  <text x="72" y="560" fill="#9945FF" font-family="ui-monospace,monospace" font-size="16">hardware.musebook.trade</text>
+  <text x="72" y="590" fill="#9eb0a6" font-family="ui-monospace,monospace" font-size="16">github.com/themusebook/solana-gadget-kit</text>
+</svg>

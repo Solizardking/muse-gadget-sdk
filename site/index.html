@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solana Gadget Kit — hardware.musebook.trade</title>
+<meta name="description" content="ESP32 round-LCD Solana hardware. An on-device wallet that signs only after a physical confirm, and robotics motion that moves only for that exact Solana confirmation.">
+<meta name="theme-color" content="#07080b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,550&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #07080b;
+    --ink: #f3efe4;
+    --dim: #9aa79a;
+    --green: #14f195;
+    --violet: #9945ff;
+    --warn: #f0c1a2;
+    --line: rgba(20, 241, 149, 0.28);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: Newsreader, Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .sky {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(900px 420px at 80% -10%, rgba(153, 69, 255, 0.22), transparent 60%),
+      radial-gradient(700px 380px at 10% 110%, rgba(20, 241, 149, 0.12), transparent 55%),
+      linear-gradient(#07080b, #07080b);
+  }
+  .grid {
+    position: fixed; inset: -20% 0 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(20, 241, 149, 0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(20, 241, 149, 0.09) 1px, transparent 1px);
+    background-size: 48px 48px;
+    transform: perspective(500px) rotateX(62deg) translateY(18%);
+    animation: drift 14s linear infinite;
+    mask-image: linear-gradient(to top, #000 10%, transparent 78%);
+  }
+  @keyframes drift { to { background-position: 0 48px; } }
+  .scan {
+    position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.18;
+    background: repeating-linear-gradient(to bottom, transparent 0 2px, #000 2px 3px);
+    mix-blend-mode: multiply;
+  }
+  main { position: relative; z-index: 2; max-width: 1120px; margin: 0 auto; padding: 28px 22px 80px; }
+  header.top { display: flex; justify-content: space-between; gap: 16px; align-items: baseline; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--green); }
+  header.top a { color: inherit; text-decoration: none; }
+  h1 {
+    font-family: "Chakra Petch", sans-serif;
+    font-weight: 600;
+    font-size: clamp(3.2rem, 8vw, 6.4rem);
+    line-height: 0.88;
+    letter-spacing: -0.04em;
+    margin: 28px 0 12px;
+    max-width: 14ch;
+  }
+  h1 em { font-style: normal; color: var(--green); display: inline-block; animation: glitch 5.5s infinite; }
+  @keyframes glitch {
+    0%, 86%, 100% { transform: none; text-shadow: none; }
+    88% { transform: translate(-2px, 1px); text-shadow: 3px 0 var(--violet), -3px 0 var(--green); }
+    90% { transform: translate(2px, -1px); text-shadow: -3px 0 var(--violet); }
+    92% { transform: none; }
+  }
+  .lede { font-size: 1.35rem; max-width: 38rem; color: var(--dim); margin: 0 0 22px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px; }
+  .cta a, button.chip {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 10px 16px;
+    background: transparent;
+    cursor: pointer;
+  }
+  .cta a.primary { background: var(--green); color: #062116; border-color: var(--green); }
+  .stage { display: grid; grid-template-columns: 280px 1fr; gap: 36px; align-items: center; }
+  .bezel {
+    position: relative;
+    width: 260px; height: 260px; border-radius: 50%;
+    display: grid; place-items: center;
+    box-shadow: 0 0 40px rgba(20, 241, 149, 0.18);
+  }
+  .bezel::before {
+    content: "";
+    position: absolute; inset: 0; border-radius: 50%;
+    background: conic-gradient(#14f195, #9945ff, #14f195);
+    animation: spin 8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(1turn); } }
+  .lcd {
+    position: relative; z-index: 1;
+    width: 236px; height: 236px; border-radius: 50%;
+    background: radial-gradient(circle at 50% 40%, #143528 0%, #07140f 62%, #020504 100%);
+    border: 8px solid #07110d;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 36px; position: relative; overflow: hidden;
+  }
+  .lcd::after {
+    content: ""; position: absolute; left: 0; right: 0; height: 18%;
+    background: linear-gradient(transparent, rgba(20, 241, 149, 0.18), transparent);
+    animation: sweep 2.8s linear infinite;
+  }
+  @keyframes sweep { from { top: -20%; } to { top: 110%; } }
+  .lcd strong { font-family: "IBM Plex Mono", monospace; letter-spacing: 0.18em; font-size: 13px; color: var(--green); }
+  .lcd span { margin-top: 10px; font-size: 1.15rem; }
+  .lcd.expired strong, .lcd.cancelled strong, .lcd.mismatch strong { color: var(--warn); }
+  .panel h2 { font-family: "Chakra Petch", sans-serif; font-size: 1.6rem; margin: 0 0 8px; }
+  .panel p { color: var(--dim); margin: 0 0 16px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  button.chip[aria-pressed="true"] { border-color: var(--green); color: var(--green); }
+  .rail {
+    margin-top: 18px; border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px;
+    display: flex; justify-content: space-between; gap: 12px; align-items: center;
+    font-family: "IBM Plex Mono", monospace; font-size: 13px;
+  }
+  .arm { width: 84px; height: 84px; }
+  .arm .horn { transform-origin: 42px 42px; transition: transform 0.45s cubic-bezier(.2,.8,.2,1); }
+  .applied .horn { transform: rotate(28deg); }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 48px; }
+  article {
+    border: 1px solid rgba(243, 239, 228, 0.12);
+    border-radius: 18px; padding: 20px 20px 8px;
+    background: rgba(7, 8, 11, 0.72);
+  }
+  article h3 { font-family: "Chakra Petch", sans-serif; margin: 0 0 8px; }
+  article p, article li { color: var(--dim); }
+  .marquee { margin-top: 42px; overflow: hidden; border-block: 1px solid var(--line); }
+  .marquee p {
+    margin: 0; padding: 10px 0; white-space: nowrap;
+    font-family: "IBM Plex Mono", monospace; letter-spacing: 0.14em; color: var(--green);
+    animation: tick 22s linear infinite;
+  }
+  @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  footer { margin-top: 36px; color: var(--dim); font-family: "IBM Plex Mono", monospace; font-size: 12px; }
+  @media (max-width: 800px) {
+    .stage, .cards { grid-template-columns: 1fr; }
+    .bezel { margin-inline: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .grid, .bezel, .lcd::after, h1 em, .marquee p { animation: none; }
+    .arm .horn { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="sky"></div>
+<div class="grid" aria-hidden="true"></div>
+<div class="scan" aria-hidden="true"></div>
+<main>
+  <header class="top">
+    <span>Solana Gadget Kit</span>
+    <a href="https://github.com/themusebook/solana-gadget-kit">github.com/themusebook/solana-gadget-kit</a>
+  </header>
+  <h1>Hardware that <em>waits</em> for Solana.</h1>
+  <p class="lede">An ESP32 round LCD, an on-device wallet that will not give up its key, and a robotics actuator that moves only when the confirmation matches that exact command.</p>
+  <div class="cta">
+    <a class="primary" href="https://github.com/themusebook/solana-gadget-kit">Open the kit</a>
+    <a href="https://github.com/themusebook/solana-gadget-kit/tree/main/solana">Host examples</a>
+    <a href="#wallets">Two wallets</a>
+  </div>
+  <section class="stage" aria-label="240 by 240 review surface">
+    <div class="bezel" id="bezel">
+      <div class="lcd" id="lcd" role="img" aria-label="240 by 240 home">
+        <strong id="headline">HOME</strong>
+        <span id="detail">Solana gadget</span>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>240×240, then past the glass.</h2>
+      <p>The round display is the review surface: home, the exact payload, expired, or cancelled. Past the LCD, a motion command is applied only for a Solana confirmation bound to that command.</p>
+      <div class="chips" role="group" aria-label="LCD state">
+        <button class="chip" type="button" data-screen="home" aria-pressed="true">Home</button>
+        <button class="chip" type="button" data-screen="review">Review</button>
+        <button class="chip" type="button" data-screen="applied">Confirm</button>
+        <button class="chip" type="button" data-screen="expired">Expired</button>
+        <button class="chip" type="button" data-screen="cancelled">Cancelled</button>
+        <button class="chip" type="button" data-screen="mismatch">Mismatch</button>
+      </div>
+      <div class="rail" id="rail">
+        <div>
+          <div id="reason">IDLE · no command bound</div>
+          <div id="motion">motion held</div>
+        </div>
+        <svg class="arm" viewBox="0 0 84 84" aria-hidden="true">
+          <circle cx="42" cy="42" r="36" fill="none" stroke="#245445" stroke-width="4"/>
+          <g class="horn">
+            <line x1="42" y1="42" x2="42" y2="12" stroke="#14F195" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="42" cy="42" r="5" fill="#14F195"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+  <div class="marquee" aria-hidden="true">
+    <p>ESP32 ROUND LCD &nbsp;·&nbsp; ED25519 ON DEVICE &nbsp;·&nbsp; SECRET NEVER EXPORTED &nbsp;·&nbsp; 10 SECOND CONFIRM WINDOW &nbsp;·&nbsp; ROBOTICS ADMITS ONLY A MATCH &nbsp;·&nbsp; POCKET WALLET CANNOT SIGN &nbsp;·&nbsp; SOLANA OS 0.4.4 &nbsp;·&nbsp; ESP32 ROUND LCD &nbsp;·&nbsp; ED25519 ON DEVICE &nbsp;·&nbsp; SECRET NEVER EXPORTED &nbsp;·&nbsp; 10 SECOND CONFIRM WINDOW &nbsp;·&nbsp; ROBOTICS ADMITS ONLY A MATCH &nbsp;·&nbsp; POCKET WALLET CANNOT SIGN &nbsp;·&nbsp; SOLANA OS 0.4.4 &nbsp;·&nbsp;</p>
+  </div>
+  <section class="cards" id="wallets">
+    <article>
+      <h3>On-device hardware wallet</h3>
+      <p>A new wallet type. The gadget generates an Ed25519 key, refuses to export the secret, shows the exact payload on the LCD, and emits a signature only after a physical confirm inside a bounded window.</p>
+      <ul>
+        <li>No signature before confirm, after expiry, or after cancel.</li>
+        <li>The signature verifies for that payload and fails for any other.</li>
+      </ul>
+    </article>
+    <article>
+      <h3>Pocket Wallet, phone approval</h3>
+      <p>Included beside the new wallet, not replaced by it. A physical press advances the ESP32 to phone review. That path still cannot sign or submit.</p>
+      <ul>
+        <li>Linux companion, firmware, API, and dashboard stay in the tree.</li>
+        <li>No live provider keys ship with the kit.</li>
+      </ul>
+    </article>
+  </section>
+  <footer>
+    hardware.musebook.trade · Apache-2.0 · Muse ESP32 and Linux SDK notices stay in the repo.
+    This page does not sign, submit, or move a real actuator.
+  </footer>
+</main>
+<script>
+const frames = {
+  home: ["HOME", "Solana gadget", "240 by 240 home", "IDLE · no command bound", "motion held", false],
+  review: ["REVIEW", "nudge servo 15", "240 by 240 review nudge servo 15", "UNCONFIRMED · waiting for a physical press", "servo:15 held", false],
+  applied: ["REVIEW", "nudge servo 15", "240 by 240 confirm nudge servo 15", "APPLIED · confirmation matches arm.nudge", "servo:15", true],
+  expired: ["EXPIRED", "window closed", "240 by 240 expired", "REFUSED · expired", "motion cleared", false],
+  cancelled: ["CANCELLED", "command dropped", "240 by 240 cancelled", "REFUSED · cancelled", "motion cleared", false],
+  mismatch: ["REVIEW", "different command", "240 by 240 mismatch", "REFUSED · command mismatch", "motion cleared", false]
+};
+const order = ["home", "review", "applied", "expired", "cancelled", "mismatch"];
+const lcd = document.getElementById("lcd");
+const headline = document.getElementById("headline");
+const detail = document.getElementById("detail");
+const reason = document.getElementById("reason");
+const motion = document.getElementById("motion");
+const rail = document.getElementById("rail");
+let timer = 0;
+function show(name) {
+  const frame = frames[name];
+  headline.textContent = frame[0];
+  detail.textContent = frame[1];
+  lcd.className = "lcd " + name;
+  lcd.setAttribute("aria-label", frame[2]);
+  reason.textContent = frame[3];
+  motion.textContent = frame[4];
+  rail.classList.toggle("applied", frame[5]);
+  document.querySelectorAll("button[data-screen]").forEach((button) => {
+    button.setAttribute("aria-pressed", button.dataset.screen === name ? "true" : "false");
+  });
+}
+document.querySelectorAll("button[data-screen]").forEach((button) => {
+  button.addEventListener("click", () => {
+    show(button.dataset.screen);
+    clearInterval(timer);
+  });
+});
+let step = 0;
+const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (!reduce) {
+  timer = setInterval(() => {
+    step = (step + 1) % order.length;
+    show(order[step]);
+  }, 2200);
+}
+</script>
+</body>
+</html>

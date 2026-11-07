@@ -14,7 +14,48 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-# Muse Gadgets
+# Solana Gadget Kit
+
+<p align="center">
+  <a href="https://hardware.musebook.trade">
+    <img src="site/hero.svg" width="1200" alt="Solana Gadget Kit. A round 240 by 240 LCD cycles through home, review, applied, and refused while a neon bezel spins.">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://hardware.musebook.trade"><strong>hardware.musebook.trade</strong></a>
+  ·
+  <a href="https://github.com/themusebook/solana-gadget-kit">github.com/themusebook/solana-gadget-kit</a>
+</p>
+
+Hardware that waits for Solana. This tree starts from the Muse ESP32 round-LCD
+gadget SDK and the Linux gadget SDK. The 240×240 glass reviews a command.
+Beyond the LCD, a robotics motion is applied only when a Solana confirmation
+for that exact command is present. A missing, expired, cancelled, or different
+command leaves the actuator still.
+
+The on-device hardware wallet generates an Ed25519 key, refuses to export the
+secret, and signs only after a physical confirm inside a bounded window.
+[Pocket Wallet](pocket-wallet) is the separate phone-approval gadget: web, API,
+firmware, Linux companion, Cloudflare proxy, scripts, and docs. A physical
+press still cannot sign or submit.
+
+| Surface | What it does |
+|---|---|
+| [Live page](https://hardware.musebook.trade) | Animated Solana hardware home. The LCD and servo on that page are a demo. They do not sign or move a real board. |
+| [On-device wallet](solana) | Host example. Secret export is refused. The signature verifies only for the confirmed payload. |
+| [Robotics gate](solana) | `servo:15` is applied only for a matching confirmation. |
+| [240×240 review](solana/dashboard/index.html) | Home, review summary, expired, cancelled. |
+| [Solana OS 0.4.4](docs/solana-os.md) | Badge bundle. [scripts/flash-solana-os.sh](scripts/flash-solana-os.sh) flashes the BP26 badge. [web-flasher](web-flasher) installs firmware from Chrome or Edge. |
+
+[skills](skills/CATALOG.md) is the community device catalog. Those skills are
+not official Muse product integrations. This README, [LICENSE](LICENSE),
+[CONTRIBUTING.md](CONTRIBUTING.md), and
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) are the project documents.
+Host-testable examples live in [solana](solana). Upstream Muse copyright and
+Apache-2.0 notices stay in place.
+
+## Muse Gadgets
 
 <p align="center">
   <picture>
